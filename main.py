@@ -25,12 +25,13 @@ async def process_image(
     img = Image.open(BytesIO(contents))
     
     processed_image = remove(img, session=session)
+    processed_image = processed_image.convert("RGB")
     
     buf = BytesIO()
-    processed_image.save(buf, format="jpg")
+    processed_image.save(buf, format="jpeg")
     buf.seek(0)
     
-    return StreamingResponse(buf, media_type="image/jpg")
+    return StreamingResponse(buf, media_type="image/jpeg")
 
     
     
