@@ -1,5 +1,7 @@
 import replicate
+from dotenv import load_dotenv
 
+load_dotenv()
 client = replicate.Client()
 
 with open("./images/müc_istek.jpg", "rb") as img_file:
