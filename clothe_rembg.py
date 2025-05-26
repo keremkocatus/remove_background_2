@@ -1,7 +1,7 @@
 import replicate
 from dotenv import load_dotenv
 from PIL import Image
-from io import BytesIO,BufferedReader
+from io import BytesIO
 import requests
 
 def load_api():
@@ -22,7 +22,6 @@ def clothe_remove_background(img_url,mask_prompt="clothe",negative_mask_prompt="
     for i,item in enumerate(output):
         if i==2:
             mask_url = item
-            #print(item)   
 
     resp = requests.get(mask_url)
     mask = Image.open(BytesIO(resp.content)).convert("L")
@@ -59,20 +58,6 @@ def human_remove_background(img_url, mask_prompt="human", negative_mask_prompt="
     
     img.putalpha(mask)
     img.show()
-    
-    return img
-
-def image2filelike(img):
-    buffer = BytesIO()
-    img.save(buffer, format="JPEG")
-    buffer.seek(0)
-    
-    return BufferedReader(buffer)
-
-def filelike2image(filelike):
-    filelike.seek(0)
-    img = Image.open(BytesIO(filelike.read()))
-    img.load()
     
     return img
 
