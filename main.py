@@ -34,7 +34,6 @@ async def process_image(
     contents = await photo.read()
     img = Image.open(BytesIO(contents))
     
-    # Arka planı kaldır
     processed_image = remove(img, session=session)
     processed_image = processed_image.convert("RGB")
     processed_image.show()
