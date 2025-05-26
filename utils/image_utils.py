@@ -1,7 +1,7 @@
 from PIL import Image
 from io import BytesIO
 
-async def compress_image(img: Image.Image,max_size: int = 1024,quality: int = 95):
+def compress_image(img: Image.Image,max_size: int = 1024,quality: int = 95):
     w, h = img.size
     
     if w<max_size and h<max_size:
