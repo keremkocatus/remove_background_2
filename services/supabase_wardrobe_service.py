@@ -10,10 +10,10 @@ SUPABASE_URL: str = os.getenv("SUPABASE_URL")
 SUPABASE_KEY: str = os.getenv("SUPABASE_ANON_KEY") 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-async def upload_supabase(user_id: uuid.UUID, clothe_image: UploadFile, category: str):
+async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str):
     
     byte_image = await clothe_image.read()
-    bucket_uuid = uuid.uuid4()
+    bucket_uuid = str(uuid.uuid4())
     
     upload_response = supabase.storage.from_("wardrobe").upload(file=byte_image, 
                                                                 path=f"{user_id}/{bucket_uuid}/{category}.jpg",
@@ -25,9 +25,9 @@ async def upload_supabase(user_id: uuid.UUID, clothe_image: UploadFile, category
     
     return public_url, bucket_uuid
     
-async def insert_supabase(img_url: str, user_id: uuid.UUID, category: str, islongtop: bool):
+async def insert_supabase(img_url: str, user_id: str, category: str, islongtop: bool):
     
-    job_id = uuid.uuid4()
+    job_id = str(uuid.uuid4())
     
     response = supabase.table("wardrobe").insert({"image_url": img_url,
                                                   "user_id": user_id,
@@ -37,7 +37,8 @@ async def insert_supabase(img_url: str, user_id: uuid.UUID, category: str, islon
     
     return job_id
 
-async def upload_bg_removed(user_id: uuid.UUID, bucket_uuid:uuid.UUID, job_id: uuid.UUID, bg_removed_image: bytes, category: str):
+async def upload_bg_removed(user_id: str, bucket_uuid: str, job_id: str, bg_removed_image: bytes, category: str):
+    
     upload_response = supabase.storage.from_("wardrobe").upload(file=bg_removed_image, 
                                                         path=f"{user_id}/{bucket_uuid}/bg_removed_{category}.png",
                                                         file_options={"cache-control": "3600", "upsert": "false"})

@@ -28,7 +28,7 @@ def prompt_generator(category: str, islongtop: bool):
         mask_prompt = "clothes"
         negative_mask_prompt = "pants,skirts,shorts,shoes"
     elif category=="bottom":
-        mask_prompt = "clothes"
+        mask_prompt = "clothes,pants,shorts,skirts"
         negative_mask_prompt = "tshirts,sweats,dresses,shoes"
     elif category=="one-piece":
         mask_prompt = "clothes"
