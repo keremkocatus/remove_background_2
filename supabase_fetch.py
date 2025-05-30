@@ -8,7 +8,6 @@ load_dotenv()
 # --- Supabase Ayarları ---
 SUPABASE_URL: str = os.getenv("SUPABASE_URL")  
 SUPABASE_KEY: str = os.getenv("SUPABASE_ANON_KEY") 
-print(SUPABASE_KEY,SUPABASE_URL)
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def fetch_try_ons():
