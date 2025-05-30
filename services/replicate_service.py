@@ -9,7 +9,7 @@ load_dotenv()
 REPL_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 _client = replicate.Client(api_token=REPL_TOKEN)
 
-async def remove_background_replicate(img_url: str,mask_prompt: str,negative_mask_prompt: str) -> Image.Image:
+async def remove_background_replicate(img_url: str, mask_prompt: str, negative_mask_prompt: str) -> Image.Image:
     output = _client.run(
         "schananas/grounded_sam:ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c",
         input={
@@ -31,4 +31,7 @@ async def remove_background_replicate(img_url: str,mask_prompt: str,negative_mas
     img = Image.open(BytesIO(resp2.content)).convert("RGBA")
     img.putalpha(mask)
     
-    return img
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    
+    return buf.getvalue()

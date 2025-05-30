@@ -1,10 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
-from fastapi.responses import StreamingResponse
 from services.rembg_service import remove_background_rembg
 from services.replicate_service import remove_background_replicate
-from utils.image_utils import compress_image
-from PIL import Image
-from io import BytesIO
+from services.supabase_service import upload_supabase, upload_bg_removed, insert_supabase
 
 router = APIRouter()
 
@@ -23,18 +20,10 @@ async def clothe_rembg(image_url: str,mask_prompt: str = "clothe", negative_mask
             mask_prompt=mask_prompt,
             negative_mask_prompt=negative_mask_prompt,
         )
+        
+        
+        
         return {"message": "OK"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/compress")
-async def compress_image(file: UploadFile = File(...)):
-    try:
-        data = await file.read()
-        img = Image.open(BytesIO(data))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Invalid image") from e
-    
-    buf = compress_image(img, max_size=1024, quality=85)
-
-    return StreamingResponse(buf, media_type="image/jpeg")
