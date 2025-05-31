@@ -1,5 +1,6 @@
 from supabase import create_client, Client
 from fastapi import UploadFile
+from utils.image_utils import compress_image
 from dotenv import load_dotenv
 import uuid
 import os
@@ -13,9 +14,10 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str):
     
     byte_image = await clothe_image.read()
+    compressed_byte_image = compress_image(byte_image)
     bucket_uuid = str(uuid.uuid4())
     
-    upload_response = supabase.storage.from_("wardrobe").upload(file=byte_image, 
+    upload_response = supabase.storage.from_("wardrobe").upload(file=compressed_byte_image, 
                                                                 path=f"{user_id}/{bucket_uuid}/{category}.jpg",
                                                                 file_options={"cache-control": "3600", "upsert": "false"})
     

@@ -36,6 +36,6 @@ async def remove_background_replicate(img_url: str, category: str, islongtop: bo
     img.putalpha(mask)
     
     buf = BytesIO()
-    img.save(buf, format="PNG")
+    img.save(buf, format="PNG", quality=80, optimize=True)
     
     return buf.getvalue()
