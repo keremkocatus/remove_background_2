@@ -7,7 +7,7 @@ url = "http://localhost:8000/wardrobe-remove-background"
 # 2) UUID'yi stringe çevir
 user_id   = "f6be7181-5cce-4a50-ba89-0f9f8eac8a9f"
 category  = "top"
-islongtop = False
+is_long_top = False
 
 # 3) Dosya
 files = {
@@ -18,7 +18,7 @@ files = {
 data = {
     "user_id":   user_id,           # ← zaten string
     "category":  category,
-    "islongtop": islongtop
+    "islongtop": is_long_top
 }
 
 # 5) POST

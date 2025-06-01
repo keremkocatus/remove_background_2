@@ -9,12 +9,12 @@ router = APIRouter()
 # post clothe background remove
 @router.post("/wardrobe-remove-background")
 async def clothe_rembg(user_id: str = Form(...), clothe_image: UploadFile = Form(...), 
-                       category: str = Form(...), islongtop: bool = Form(...)):
+                       category: str = Form(...), is_long_top: bool = Form(...)):
     try:
         public_url, bucket_uuid = await upload_supabase(user_id, clothe_image, category)
-        job_id = await insert_supabase(public_url,user_id,category,islongtop)
+        job_id = await insert_supabase(public_url,user_id,category,is_long_top)
         
-        asyncio.create_task(backgroundtasks_rmbg(user_id,bucket_uuid,job_id,public_url,category,islongtop))
+        asyncio.create_task(backgroundtasks_rmbg(user_id,bucket_uuid,job_id,public_url,category,is_long_top))
         
         return {"job_id": job_id}
     except Exception as e:

@@ -27,14 +27,14 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
     
     return public_url, bucket_uuid
     
-async def insert_supabase(img_url: str, user_id: str, category: str, islongtop: bool):
+async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top: bool):
     
     job_id = str(uuid.uuid4())
     
     response = supabase.table("wardrobe").insert({"image_url": img_url,
                                                   "user_id": user_id,
                                                   "category": category,
-                                                  "is_long_top": islongtop,
+                                                  "is_long_top": is_long_top,
                                                   "job_id": job_id}).execute()
     
     return job_id

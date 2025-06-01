@@ -10,9 +10,9 @@ load_dotenv()
 REPL_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 _client = replicate.Client(api_token=REPL_TOKEN)
 
-async def remove_background_replicate(img_url: str, category: str, islongtop: bool) -> bytes:
+async def remove_background_replicate(img_url: str, category: str, is_long_top: bool) -> bytes:
     
-    mask_prompt, negative_mask_prompt = prompt_generator(category, islongtop)
+    mask_prompt, negative_mask_prompt = prompt_generator(category, is_long_top)
     
     output = _client.run(
         "schananas/grounded_sam:ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c",

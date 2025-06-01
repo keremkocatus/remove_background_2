@@ -26,9 +26,9 @@ def compress_image(img: bytes, max_size: int = 1024, quality: int = 75):
     
     return buf.getvalue()
 
-def prompt_generator(category: str, islongtop: bool):
+def prompt_generator(category: str, is_long_top: bool):
     
-    if category=="top" and islongtop:
+    if category=="top" and is_long_top:
         mask_prompt = "dress"
         negative_mask_prompt = ""
     elif category=="top":
