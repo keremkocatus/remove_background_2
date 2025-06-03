@@ -1,7 +1,7 @@
 import os
 import replicate
 import requests
-from PIL import Image
+from PIL import Image, ImageFilter
 from io import BytesIO
 from utils.image_utils import get_mask_prompts
 from dotenv import load_dotenv
@@ -19,7 +19,7 @@ async def remove_background_replicate(img_url: str, category: str, is_long_top: 
         input={
             "image": img_url,
             "mask_prompt": mask_prompt,
-            "adjustment_factor": -20,
+            "adjustment_factor": -15,
             "negative_mask_prompt": negative_mask_prompt,
         },
     )
@@ -34,6 +34,10 @@ async def remove_background_replicate(img_url: str, category: str, is_long_top: 
     resp2 = requests.get(img_url)
     img = Image.open(BytesIO(resp2.content)).convert("RGBA")
     img.putalpha(mask)
+    
+    r, g, b, alpha = img.split()
+    alpha_smoothed = alpha.filter(ImageFilter.GaussianBlur(radius=1))
+    img = Image.merge("RGBA", (r, g, b, alpha_smoothed))
     
     buf = BytesIO()
     img.save(buf, format="PNG", quality=85, optimize=True)

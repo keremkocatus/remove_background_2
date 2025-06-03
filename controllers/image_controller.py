@@ -16,7 +16,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
         
         loop = asyncio.get_running_loop()
         loop.create_task(backgroundtasks_rmbg(user_id,bucket_uuid,job_id,public_url,category,is_long_top))
-        print("test")
+
         return {"job_id": job_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"wardrobe-background-remove: {str(e)}")
