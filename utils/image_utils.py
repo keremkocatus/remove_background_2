@@ -1,7 +1,7 @@
 from PIL import Image
 from io import BytesIO
 
-def compress_image(img: bytes, max_size: int = 1024, quality: int = 75):
+def compress_image(img: bytes, max_size: int = 1024, quality: int = 85):
     img_file = Image.open(BytesIO(img))
     
     if img_file.mode in ("RGBA", "P"):
@@ -26,25 +26,22 @@ def compress_image(img: bytes, max_size: int = 1024, quality: int = 75):
     
     return buf.getvalue()
 
-def prompt_generator(category: str, is_long_top: bool):
+mask_prompt = {
+    "top": "clothes",
+    "longtop": "dress",      
+    "bottom": "pants",
+    "one-piece": "clothes",
+    "shoes": "shoes",
+    "accessories": "accessories"
+}
+
+def get_mask_prompts(category: str, is_long_top: bool):
+    
+    negative_mask_prompt = ""
     
     if category=="top" and is_long_top:
-        mask_prompt = "dress"
-        negative_mask_prompt = ""
-    elif category=="top":
-        mask_prompt = "clothes"
-        negative_mask_prompt = ""
-    elif category=="bottom":
-        mask_prompt = "pants"
-        negative_mask_prompt = ""
-    elif category=="one-piece":
-        mask_prompt = "clothes"
-        negative_mask_prompt = ""
-    elif category=="shoes":
-        mask_prompt = "shoes"
-        negative_mask_prompt = ""
-    elif category=="accessories":
-        mask_prompt = "accessories"
-        negative_mask_prompt = ""
+        positive_mask_prompt = mask_prompt["longtop"]
+    else:
+        positive_mask_prompt = mask_prompt[category]
         
-    return mask_prompt, negative_mask_prompt
+    return positive_mask_prompt, negative_mask_prompt

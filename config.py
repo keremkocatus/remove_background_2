@@ -1,24 +1,23 @@
 import requests
-import uuid
 
 # 1) Endpoint URL
 url = "http://localhost:8000/wardrobe-remove-background"
 
 # 2) UUID'yi stringe çevir
 user_id   = "f6be7181-5cce-4a50-ba89-0f9f8eac8a9f"
-category  = "top"
+category  = "accessories"
 is_long_top = False
 
 # 3) Dosya
 files = {
-    "clothe_image": open("./images/beyaz-uzeri-serpme-tasli-tisort.jpeg", "rb")
+    "clothe_image": open("./images/kupe.jpeg", "rb")
 }
 
 # 4) Form verisi (string-boolean)
 data = {
     "user_id":   user_id,           # ← zaten string
     "category":  category,
-    "islongtop": is_long_top
+    "is_long_top": is_long_top
 }
 
 # 5) POST

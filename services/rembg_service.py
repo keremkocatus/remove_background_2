@@ -5,7 +5,7 @@ from io import BytesIO
 
 _SESSION = new_session(model_name="u2net")
 
-async def remove_background_rembg(photo: UploadFile,clothing: UploadFile):
+async def segment_human_from_background(photo: UploadFile):
     contents = await photo.read()
     img = Image.open(BytesIO(contents))
     processed = remove(img, session=_SESSION)
