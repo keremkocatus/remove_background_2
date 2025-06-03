@@ -23,7 +23,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
 
 #post replicate human segmentation
 @router.post("/replicate-human-segmentation")
-async def replicate_human_segmentation():
+async def replicate_human_segmentation(user_id: str = Form(...), image: UploadFile = File(...)):
     pass
 
 # post u2net human segmentation
