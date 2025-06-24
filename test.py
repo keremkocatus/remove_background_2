@@ -15,7 +15,7 @@ files = {
 
 # 4) Form verisi (string-boolean)
 data = {
-    "user_id":   user_id,           # ← zaten string
+    "user_id":   user_id,           
     "category":  category,
     "is_long_top": is_long_top
 }
