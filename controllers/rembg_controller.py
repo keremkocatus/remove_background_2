@@ -20,6 +20,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"wardrobe-background-remove: {str(e)}")
 
+# post wardrobe job_status 
 @router.post("/job-status/{job_id}")
 async def job_status(job_id: str):
     try:
