@@ -23,7 +23,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
 @router.post("/job-status/{job_id}")
 async def job_status(job_id: str):
     try:
-        return check_job_status(job_id)
+        return await check_job_status(job_id)
     except HTTPException:
         raise
     except Exception as e:
