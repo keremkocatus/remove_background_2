@@ -17,6 +17,7 @@ def create_app() -> FastAPI:
 
     # Router’ları ekle
     app.include_router(image_router, prefix="", tags=["images"])
+
     return app
 
 app = create_app()
