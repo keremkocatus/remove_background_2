@@ -1,10 +1,16 @@
-from services.replicate_rembg_service import remove_background_replicate
+from utils.image_utils import process_mask
 from services.supabase_wardrobe_service import upload_bg_removed
+from starlette.concurrency import run_in_threadpool
+from replicate.prediction import Prediction
 
-async def backgroundtasks_rmbg(user_id: str, bucket_uuid: str, job_id: str, 
-                         public_url: str, category: str, is_long_top: bool):
-    try:
-        bg_removed_image = await remove_background_replicate(public_url, category, is_long_top)
-        resp = await upload_bg_removed(user_id, bucket_uuid, job_id, bg_removed_image, category)
-    except Exception as e:
-        print(f"Error in backgroundtasks_rmbg: {e}")
+async def start_background_process(pred: Prediction, job_id: str, job: dict[str, str]):
+    for i, item in enumerate(pred.output):
+        if i == 2:
+            mask_url = item
+    
+    bg_removed_image = await run_in_threadpool(process_mask, mask_url, job)
+    result_url = await upload_bg_removed(bg_removed_image, job_id, job)
+    
+    job["status"] = "finished"
+    job["result_url"] = result_url
+

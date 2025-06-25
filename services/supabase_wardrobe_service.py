@@ -1,6 +1,6 @@
-from supabase import create_client, Client
+from supabase import AsyncClient, create_async_client
 from fastapi import UploadFile
-from utils.image_utils import compress_image
+from utils.url_cleaner import clean_url
 from dotenv import load_dotenv
 import uuid
 import os
@@ -9,25 +9,24 @@ load_dotenv()
 
 SUPABASE_URL: str = os.getenv("SUPABASE_URL")  
 SUPABASE_KEY: str = os.getenv("SUPABASE_ANON_KEY") 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: AsyncClient = create_async_client(SUPABASE_URL, SUPABASE_KEY)
 
 SUPABASE_TABLE = "wardrobe"
 
-async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str) -> str:
+async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str) -> tuple[str, str]:
     try:
         byte_image = await clothe_image.read()
-        #compressed_byte_image = compress_image(byte_image)
         bucket_uuid = str(uuid.uuid4())
         img_path = f"{user_id}/{bucket_uuid}/{category}.jpg"
         
-        upload_response = supabase.storage.from_(SUPABASE_TABLE).upload(
+        upload_response = await supabase.storage.from_(SUPABASE_TABLE).upload(
             file=byte_image, 
             path=img_path,
             file_options={"cache-control": "3600", "upsert": "false"}
         )
         
         url_response = supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
-        public_url = url_response[:-1]
+        public_url = clean_url(url_response["publicURL"])
         
         return public_url, bucket_uuid
     except Exception as e:
@@ -38,7 +37,7 @@ async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top
     try:
         job_id = str(uuid.uuid4())
         
-        response = supabase.table(SUPABASE_TABLE).insert({
+        response = await supabase.table(SUPABASE_TABLE).insert({
             "image_url": img_url,
             "user_id": user_id,
             "category": category,
@@ -51,23 +50,24 @@ async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top
         print(f"Error in insert_supabase: {e}")
         return None
 
-async def upload_bg_removed(user_id: str, bucket_uuid: str, job_id: str, bg_removed_image: bytes, category: str):
+async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str, str]):
     try:
-        upload_response = supabase.storage.from_(SUPABASE_TABLE).upload(
+        img_path = f"{job["user_id"]}/{job["bucket_uuid"]}/bg_removed_{job["category"]}.png"
+        
+        upload_response = await supabase.storage.from_(SUPABASE_TABLE).upload(
             file=bg_removed_image, 
-            path=f"{user_id}/{bucket_uuid}/bg_removed_{category}.png",
+            path=img_path,
             file_options={"cache-control": "3600", "upsert": "false"}
         )
         
-        img_path = upload_response.path
         url_response = supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
-        public_url = url_response[:-1]
+        public_url = clean_url(url_response["publicURL"])
         
-        update_response = supabase.table(SUPABASE_TABLE).update({
+        update_response = await supabase.table(SUPABASE_TABLE).update({
             "removed_bg_image_url": public_url
         }).eq("job_id", job_id).execute()
         
-        return {"Status": "Finished"}
+        return public_url
     except Exception as e:
         print(f"Error in upload_bg_removed: {e}")
         return None

@@ -1,5 +1,23 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 from io import BytesIO
+import requests
+
+def process_mask(mask_url: str, job: dict[str,str]) -> bytes:
+    resp = requests.get(mask_url)
+    mask = Image.open(BytesIO(resp.content)).convert("L")
+
+    resp2 = requests.get(job["public_url"])
+    img = Image.open(BytesIO(resp2.content)).convert("RGBA")
+    img.putalpha(mask)
+    
+    r, g, b, alpha = img.split()
+    alpha_smoothed = alpha.filter(ImageFilter.GaussianBlur(radius=1))
+    img = Image.merge("RGBA", (r, g, b, alpha_smoothed))
+    
+    buf = BytesIO()
+    img.save(buf, format="PNG", quality=85, optimize=True)
+    
+    return buf.getvalue()
 
 def compress_image(img: bytes, max_size: int = 1024, quality: int = 85):
     try:

@@ -1,48 +1,84 @@
 import os
+import uuid
 import replicate
-import requests
-from PIL import Image, ImageFilter
-from io import BytesIO
 from utils.prompt_utils import get_mask_prompts
+from fastapi import HTTPException
+from utils.background_utils import start_background_process
 from dotenv import load_dotenv
+import asyncio
 
 load_dotenv()
 REPL_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 _client = replicate.Client(api_token=REPL_TOKEN)
 
-async def remove_background_replicate(img_url: str, category: str, is_long_top: bool) -> bytes:
-    try:
-        mask_prompt, negative_mask_prompt = get_mask_prompts(category, is_long_top)
-        
-        output = _client.run(
-            "schananas/grounded_sam:ee871c19efb1941f55f66a3d7d960428c8a5ab9ebc21c",
-            input={
-                "image": img_url,
-                "mask_prompt": mask_prompt,
-                "adjustment_factor": -15,
-                "negative_mask_prompt": negative_mask_prompt,
-            },
-        )
-        
-        for i, item in enumerate(output):
-            if i == 2:
-                mask_url = item
+MODEL_VERSION = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c"
+JOBS: dict[str, dict] = {}
 
-        resp = requests.get(mask_url)
-        mask = Image.open(BytesIO(resp.content)).convert("L")
+def create_job(img_url: str, user_id: str, bucket_uuid: str, category: str, is_long_top: bool):
+    job_id = str(uuid.uuid4())
+    
+    JOBS[job_id] = {
+        "status": "processing",
+        "is_prediction_finished": False,
+        "prediction_id": None,
+        "user_id": user_id,
+        "bucket_uuid": bucket_uuid,
+        "public_url": img_url,
+        "category": category,
+        "is_long_top": is_long_top,
+        "result_url": None
+    }
+    
+    return job_id
+    
+async def start_replicate_prediction(job_id: str):
+    job = JOBS[job_id]
+    mask_prompt, negative_mask_prompt = get_mask_prompts(job["category"], job["is_long_top"])
+    
+    input = {
+        "image": job["public_url"],
+        "mask_prompt": mask_prompt,
+        "adjustment_factor": -15,
+        "negative_mask_prompt": negative_mask_prompt,
+    }
+    
+    prediction = await _client.predictions.async_create(
+        version=MODEL_VERSION,
+        input=input
+    )
+    
+    JOBS[job_id]["prediction_id"] = prediction.id
+    
+async def check_job_status(job_id: str):
+    job = JOBS.get(job_id)
+    if not job:
+        raise HTTPException(404, "Job not exist!")
+    
+    if job["status"] == "processing" and not job["is_prediction_finished"]:
+        pred = await _client.predictions.async_get(job["prediction_id"])
+        
+        if pred.status == "succeeded":
+            job["is_prediction_finished"] = True
+            
+            loop = asyncio.get_running_loop()
+            loop.create_task(start_background_process(pred, job_id, job))
+            return {"status": "processing"}
+        
+        elif pred.status == "canceled":
+            return {"status": "canceled"}
+        
+        elif pred.status == "failed":
+            return {"status": "failed"}
+        
+        else:
+            return {"status": "processing"}
+            
+    elif job["status"] == "processing" and job["is_prediction_finished"]:
+        return {"status": "processing"}
+    
+    elif job["status"] == "finished" and job["is_prediction_finished"]:
+        return {"status": "finished", "result_url": job["result_url"]}
+            
 
-        resp2 = requests.get(img_url)
-        img = Image.open(BytesIO(resp2.content)).convert("RGBA")
-        img.putalpha(mask)
-        
-        r, g, b, alpha = img.split()
-        alpha_smoothed = alpha.filter(ImageFilter.GaussianBlur(radius=1))
-        img = Image.merge("RGBA", (r, g, b, alpha_smoothed))
-        
-        buf = BytesIO()
-        img.save(buf, format="PNG", quality=85, optimize=True)
-        
-        return buf.getvalue()
-    except Exception as e:
-        print(f"Error in remove_background_replicate: {e}")
-        return None
+    
+
