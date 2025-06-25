@@ -3,7 +3,7 @@ import replicate
 import requests
 from PIL import Image, ImageFilter
 from io import BytesIO
-from utils.image_utils import get_mask_prompts
+from utils.prompt_utils import get_mask_prompts
 from dotenv import load_dotenv
 
 load_dotenv()

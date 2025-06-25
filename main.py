@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from controllers.image_controller import router as image_router
+from controllers.rembg_controller import router as image_router
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Background Removal API")

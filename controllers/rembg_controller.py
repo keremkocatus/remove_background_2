@@ -1,5 +1,5 @@
 from fastapi import APIRouter, File, Form ,UploadFile, HTTPException
-from services.rembg_service import segment_human_from_background
+from services.u2net_rembg_service import segment_human_from_background
 from services.supabase_wardrobe_service import upload_supabase, insert_supabase
 from utils.background_utils import backgroundtasks_rmbg
 import asyncio

@@ -1,4 +1,4 @@
-from services.replicate_wardrobe_service import remove_background_replicate
+from services.replicate_rembg_service import remove_background_replicate
 from services.supabase_wardrobe_service import upload_bg_removed
 
 async def backgroundtasks_rmbg(user_id: str, bucket_uuid: str, job_id: str, 

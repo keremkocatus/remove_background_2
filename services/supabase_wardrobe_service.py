@@ -13,7 +13,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 SUPABASE_TABLE = "wardrobe"
 
-async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str):
+async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str) -> str:
     try:
         byte_image = await clothe_image.read()
         #compressed_byte_image = compress_image(byte_image)
@@ -34,7 +34,7 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
         print(f"Error in upload_supabase: {e}")
         return None
 
-async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top: bool):
+async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top: bool) -> str:
     try:
         job_id = str(uuid.uuid4())
         
