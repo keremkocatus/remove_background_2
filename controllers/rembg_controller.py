@@ -1,5 +1,5 @@
 from fastapi import APIRouter, File, Form ,UploadFile, HTTPException
-from services.supabase_wardrobe_service import upload_supabase
+from services.supabase_wardrobe_service import upload_supabase, insert_supabase
 from services.replicate_rembg_service import create_job, start_replicate_prediction, check_job_status
 import asyncio
 
@@ -12,6 +12,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
     try:
         public_url, bucket_uuid = await upload_supabase(user_id, clothe_image, category)
         job_id = create_job(public_url, user_id, bucket_uuid, category, is_long_top)
+        resp = await insert_supabase(job_id, public_url, user_id, category, is_long_top)
         
         loop = asyncio.get_running_loop()
         loop.create_task(start_replicate_prediction(job_id))

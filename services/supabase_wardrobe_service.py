@@ -54,10 +54,9 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
         return None
 
 # Insert a new job record into Supabase table
-async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top: bool) -> str:
+async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str, is_long_top: bool) -> str:
     try:
         supabase = await _get_supabase()
-        job_id = str(uuid.uuid4())
 
         resp = await supabase.table(SUPABASE_TABLE).insert({
             "image_url": img_url,
@@ -67,7 +66,7 @@ async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top
             "job_id": job_id
         }).execute()
 
-        return job_id
+        return {"status": "Job inserted database!"}
 
     except Exception as e:
         print(f"Error in insert_supabase: {e}")

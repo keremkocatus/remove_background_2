@@ -27,5 +27,5 @@ def poll_job_status(job_id: str):
         else:
             time.sleep(POLL_INTERVAL)
 
-job_id = "57a92a14-67bd-4496-be51-e77324ec76df" 
+job_id = "2dd37981-0ae4-4c90-81b8-83c869817ce4" 
 poll_job_status(job_id)
