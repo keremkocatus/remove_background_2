@@ -2,8 +2,8 @@ import os
 import uuid
 import replicate
 from utils.prompt_utils import get_mask_prompts
-from fastapi import HTTPException
 from utils.background_utils import start_background_process
+from fastapi import HTTPException
 from dotenv import load_dotenv
 import asyncio
 
@@ -29,6 +29,7 @@ def create_job(img_url: str, user_id: str, bucket_uuid: str, category: str, is_l
             "is_long_top": is_long_top,
             "result_url": None
         }
+        
         return job_id
     except Exception as e:
         print(f"Error in create_job: {e}")
