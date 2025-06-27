@@ -42,7 +42,7 @@ async def start_replicate_prediction(job_id: str):
         input = {
             "image": job["public_url"],
             "mask_prompt": mask_prompt,
-            "adjustment_factor": -15,
+            "adjustment_factor": -20,
             "negative_mask_prompt": negative_mask_prompt,
         }
         prediction = await _client.predictions.async_create(

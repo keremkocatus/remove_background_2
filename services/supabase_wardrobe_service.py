@@ -10,7 +10,7 @@ load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
-SUPABASE_TABLE = "wardrobe"
+SUPABASE_TABLE = "deneme"
 
 # lazy-init Supabase client
 _supabase: AsyncClient | None = None
@@ -32,14 +32,21 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
         bucket_uuid = str(uuid.uuid4())
         img_path = f"{user_id}/{bucket_uuid}/{category}.jpg"
 
-        await supabase.storage.from_(SUPABASE_TABLE).upload(
+        resp = await supabase.storage.from_(SUPABASE_TABLE).upload(
             file=byte_image,
             path=img_path,
             file_options={"cache-control": "3600", "upsert": "false"}
         )
 
         url_response = await supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
-        public_url = clean_url(url_response["publicURL"])
+        
+        if isinstance(url_response, str):
+            public_url = clean_url(url_response)
+        elif isinstance(url_response, dict):
+            public_url = clean_url(url_response["publicURL"] or url_response["public_url"])
+        else:
+            print("Public URL type error!")
+    
         return public_url, bucket_uuid
 
     except Exception as e:
@@ -52,7 +59,7 @@ async def insert_supabase(img_url: str, user_id: str, category: str, is_long_top
         supabase = await _get_supabase()
         job_id = str(uuid.uuid4())
 
-        await supabase.table(SUPABASE_TABLE).insert({
+        resp = await supabase.table(SUPABASE_TABLE).insert({
             "image_url": img_url,
             "user_id": user_id,
             "category": category,
@@ -72,16 +79,22 @@ async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str,
         supabase = await _get_supabase()
         img_path = f"{job['user_id']}/{job['bucket_uuid']}/bg_removed_{job['category']}.png"
 
-        await supabase.storage.from_(SUPABASE_TABLE).upload(
+        resp = await supabase.storage.from_(SUPABASE_TABLE).upload(
             file=bg_removed_image,
             path=img_path,
             file_options={"cache-control": "3600", "upsert": "false"}
         )
 
         url_response = await supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
-        public_url = clean_url(url_response["publicURL"])
+        
+        if isinstance(url_response, str):
+            public_url = clean_url(url_response)
+        elif isinstance(url_response, dict):
+            public_url = clean_url(url_response["publicURL"] or url_response["public_url"])
+        else:
+            print("Public URL type error!")
 
-        await supabase.table(SUPABASE_TABLE).update({
+        resp = await supabase.table(SUPABASE_TABLE).update({
             "removed_bg_image_url": public_url
         }).eq("job_id", job_id).execute()
 
