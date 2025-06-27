@@ -58,7 +58,7 @@ async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str
     try:
         supabase = await _get_supabase()
 
-        resp = await supabase.table(SUPABASE_TABLE).insert({
+        resp = await supabase.from_(SUPABASE_TABLE).insert({
             "image_url": img_url,
             "user_id": user_id,
             "category": category,
@@ -93,7 +93,7 @@ async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str,
         else:
             print("Public URL type error!")
 
-        resp = await supabase.table(SUPABASE_TABLE).update({
+        resp = await supabase.from_(SUPABASE_TABLE).update({
             "removed_bg_image_url": public_url
         }).eq("job_id", job_id).execute()
 

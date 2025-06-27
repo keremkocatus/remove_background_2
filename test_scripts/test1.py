@@ -10,7 +10,7 @@ is_long_top = False
 
 # 3) Dosya
 files = {
-    "clothe_image": open("./images/beyaz-uzeri-serpme-tasli-tisort.jpeg", "rb")
+    "clothe_image": open("./images/green_sweat.jpg", "rb")
 }
 
 # 4) Form verisi (string-boolean)
