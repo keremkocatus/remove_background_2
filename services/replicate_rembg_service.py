@@ -15,7 +15,7 @@ MODEL_VERSION = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21
 JOBS: dict[str, dict] = {}
 
 # Create and register a new background-removal job
-def create_job(img_url: str, user_id: str, bucket_uuid: str, category: str, is_long_top: bool):
+def create_job(img_url: str, user_id: str, bucket_uuid: str, category: str, is_long_top: bool = False):
     try:
         job_id = str(uuid.uuid4())
         JOBS[job_id] = {

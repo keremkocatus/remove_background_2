@@ -54,7 +54,7 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
         return None
 
 # Insert a new job record into Supabase table
-async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str, is_long_top: bool) -> str:
+async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str, is_long_top: bool = False) -> str:
     try:
         supabase = await _get_supabase()
 

@@ -25,3 +25,4 @@ resp = requests.post(url, data=data, files=files)
 
 print("Status code:", resp.status_code)
 print("Response body:", resp.text)
+

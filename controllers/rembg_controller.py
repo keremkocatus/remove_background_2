@@ -8,7 +8,7 @@ router = APIRouter()
 # post wardrobe clothe background remove
 @router.post("/wardrobe-remove-background")
 async def remove_clothing_background(user_id: str = Form(...), clothe_image: UploadFile = File(...), 
-                       category: str = Form(...), is_long_top: bool = Form(...)):
+                       category: str = Form(...), is_long_top: bool = Form(False)):
     try:
         public_url, bucket_uuid = await upload_supabase(user_id, clothe_image, category)
         job_id = create_job(public_url, user_id, bucket_uuid, category, is_long_top)

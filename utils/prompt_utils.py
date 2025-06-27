@@ -1,13 +1,13 @@
 mask_prompt = {
-    "top": "clothes",
-    "longtop": "dress",
-    "bottom": "pants",
-    "one-piece": "clothes",
+    "tops": "clothes",
+    "longtops": "dress",
+    "bottoms": "pants",
+    "one-pieces": "clothes",
     "shoes": "shoes",
     "accessories": "accessories"
 }
 
-def get_mask_prompts(category: str, is_long_top: bool):
+def get_mask_prompts(category: str, is_long_top: bool = False):
     try:
         negative_mask_prompt = ""
         
