@@ -38,7 +38,7 @@ async def upload_supabase(user_id: str, clothe_image: UploadFile, category: str)
             file_options={"cache-control": "3600", "upsert": "false"}
         )
 
-        url_response = supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
+        url_response = await supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
         public_url = clean_url(url_response["publicURL"])
         return public_url, bucket_uuid
 
@@ -78,7 +78,7 @@ async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str,
             file_options={"cache-control": "3600", "upsert": "false"}
         )
 
-        url_response = supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
+        url_response = await supabase.storage.from_(SUPABASE_TABLE).get_public_url(img_path)
         public_url = clean_url(url_response["publicURL"])
 
         await supabase.table(SUPABASE_TABLE).update({
