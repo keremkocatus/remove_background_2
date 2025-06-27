@@ -65,7 +65,7 @@ async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str
             "is_long_top": is_long_top,
             "job_id": job_id
         }).execute()
-        print("test")
+        
         return {"status": "Job successfully inserted database!"}
 
     except Exception as e:
