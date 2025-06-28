@@ -8,7 +8,7 @@ POLL_INTERVAL = 5  # saniye
 def poll_job(job_id: str):
     url = f"{BASE_URL}/job-status/{job_id}"
     while True:
-        resp = requests.post(url)
+        resp = requests.get(url)
         resp.raise_for_status()
         data = resp.json()
         status = data.get("status")
@@ -29,5 +29,5 @@ def main(job_ids: list[str]):
 
 if __name__ == "__main__":
     # start_jobs.py’den aldığınız üç job_id’yi buraya geçirin:
-    ids = ['b9d669f8-1daf-4ab1-8665-0f30987542f5', '531c09a9-733e-473b-997d-ee258c412d5f', '1cc058ec-e800-4809-8731-c5bf05259325']
+    ids = ['7ed6855a-6e1f-4885-bd28-14445c9f7904', '4b775752-12e5-42ee-b55a-d4f561077bef', '821440fd-933c-4367-a2fd-31ddf07cbd14']
     main(ids)

@@ -1,12 +1,12 @@
 from utils.image_utils import process_mask
-from services.supabase_wardrobe_service import upload_bg_removed
+from services.supabase_wardrobe_service import upload_bg_removed, update_fail
 from starlette.concurrency import run_in_threadpool
 from replicate.prediction import Prediction
 
 # Handle background mask processing and upload
 async def start_background_process(pred: Prediction, job_id: str, job: dict[str, str]):
     try:
-        for i, item in enumerate(pred.output):
+        for i, item in enumerate(pred["output"]):
             if i == 2:
                 mask_url = item
 
@@ -16,5 +16,6 @@ async def start_background_process(pred: Prediction, job_id: str, job: dict[str,
         job["status"] = "finished"
         job["result_url"] = result_url
     except Exception as e:
+        await update_fail(job_id)
         print(f"Error in start_background_process for job {job_id}: {e}")
         raise

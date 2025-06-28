@@ -2,6 +2,7 @@ import os
 import uuid
 import replicate
 from replicate.prediction import Prediction
+from services.supabase_wardrobe_service import update_fail
 from utils.webhook_utils import get_job_id_by_prediction
 from utils.prompt_utils import get_mask_prompts
 from utils.background_utils import start_background_process
@@ -14,7 +15,8 @@ REPL_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 _client = replicate.Client(api_token=REPL_TOKEN)
 
 MODEL_VERSION = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c"
-WEBHOOK_ADDRESS = "http://localhost:8000/replicate-webhook"
+WEBHOOK_ADDRESS = "https://bf6d-88-232-8-144.ngrok-free.app/replicate-webhook"
+
 JOBS: dict[str, dict] = {}
 
 # Create and register a new background-removal job
@@ -62,14 +64,17 @@ async def start_replicate_prediction(job_id: str):
         print(f"Error in start_replicate_prediction for job {job_id}: {e}")
         raise
     
-async def process_webhook(prediction: Prediction):
-    prediction_id = prediction.id
-    job_id, job = get_job_id_by_prediction(prediction_id, JOBS)
-    
-    loop = asyncio.get_running_loop()
-    loop.create_task(start_background_process(prediction, job_id, job))
-    
-    return {"status": "Webhook succesfully received!"}
+async def process_webhook(prediction: dict):
+    job_id = None
+    try:
+        prediction_id = prediction["id"]
+        job_id, job = get_job_id_by_prediction(prediction_id, JOBS)
+        loop = asyncio.get_running_loop()
+        loop.create_task(start_background_process(prediction, job_id, job))
+    except Exception as e:
+        if job_id:
+            await update_fail(job_id)
+        raise HTTPException(status_code=500, detail=f"Webhook processing failed: {e}")
     
 # Check status of a job and, if succeeded, start post-processing
 async def check_job_status(job_id: str):

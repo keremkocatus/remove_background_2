@@ -104,3 +104,10 @@ async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str,
     except Exception as e:
         print(f"Error in upload_bg_removed: {e}")
         return None
+
+async def update_fail(job_id: str):
+    supabase = await _get_supabase()
+    
+    resp = await supabase.from_(SUPABASE_TABLE).update({
+        "status": "failed"
+    }).eq("job_id", job_id).execute()

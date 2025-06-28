@@ -22,7 +22,7 @@ async def remove_clothing_background(user_id: str = Form(...), clothe_image: Upl
         raise HTTPException(status_code=500, detail=f"wardrobe-background-remove: {str(e)}")
 
 # post wardrobe job_status 
-@router.post("/job-status/{job_id}")
+@router.get("/job-status/{job_id}")
 async def job_status(job_id: str):
     try:
         return await check_job_status(job_id)
@@ -35,8 +35,9 @@ async def job_status(job_id: str):
 async def replicate_webhook(request: Request):
     try:
         payload = await request.json()
-        resp = await process_webhook(payload)
-        return resp
+        await process_webhook(payload)
+        
+        return {"status": "Webhook succesfully received!"}
     except HTTPException:
         raise
     except Exception as e:

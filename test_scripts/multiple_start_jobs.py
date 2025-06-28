@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 URL = "http://localhost:8000/wardrobe-remove-background"
 USER_ID = "fc39d9f5-dfba-4f5f-bc73-f5638f8e6208"
-CATEGORY = "top"
+CATEGORY = "tops"
 IS_LONG_TOP = False
 IMAGE_PATH = "./images/green_sweat.jpg"
 
