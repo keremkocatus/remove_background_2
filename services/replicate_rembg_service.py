@@ -14,7 +14,7 @@ REPL_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 _client = replicate.Client(api_token=REPL_TOKEN)
 
 MODEL_VERSION = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c"
-WEBHOOK_ADDRESS = ""
+WEBHOOK_ADDRESS = "http://localhost:8000/replicate-webhook"
 JOBS: dict[str, dict] = {}
 
 # Create and register a new background-removal job
@@ -64,7 +64,7 @@ async def start_replicate_prediction(job_id: str):
     
 async def process_webhook(prediction: Prediction):
     prediction_id = prediction.id
-    job_id, job = get_job_id_by_prediction(prediction_id)
+    job_id, job = get_job_id_by_prediction(prediction_id, JOBS)
     
     loop = asyncio.get_running_loop()
     loop.create_task(start_background_process(prediction, job_id, job))

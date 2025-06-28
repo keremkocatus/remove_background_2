@@ -5,7 +5,7 @@ url = "http://localhost:8000/wardrobe-remove-background"
 
 # 2) UUID'yi stringe çevir
 user_id   = "fc39d9f5-dfba-4f5f-bc73-f5638f8e6208"
-category  = "top"
+category  = "tops"
 is_long_top = False
 
 # 3) Dosya
