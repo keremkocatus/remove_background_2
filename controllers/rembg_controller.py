@@ -1,6 +1,6 @@
-from fastapi import APIRouter, File, Form ,UploadFile, HTTPException
+from fastapi import APIRouter, File, Form ,UploadFile, HTTPException, Request
 from services.supabase_wardrobe_service import upload_supabase, insert_supabase
-from services.replicate_rembg_service import create_job, start_replicate_prediction, check_job_status
+from services.replicate_rembg_service import create_job, start_replicate_prediction, check_job_status, process_webhook
 import asyncio
 
 router = APIRouter()
@@ -30,3 +30,15 @@ async def job_status(job_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"job-status/{job_id}: {e}")
+
+@router.post("/replicate-webhook")
+async def replicate_webhook(request: Request):
+    try:
+        payload = await request.json()
+        resp = await process_webhook(payload)
+        return resp
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Webhook processing failed: {e}")
+    

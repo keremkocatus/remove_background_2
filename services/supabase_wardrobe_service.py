@@ -63,7 +63,8 @@ async def insert_supabase(job_id: str, img_url: str, user_id: str, category: str
             "user_id": user_id,
             "category": category,
             "is_long_top": is_long_top,
-            "job_id": job_id
+            "job_id": job_id,
+            "status": "processing"
         }).execute()
         
         return {"status": "Job successfully inserted database!"}
@@ -94,7 +95,8 @@ async def upload_bg_removed(bg_removed_image: bytes, job_id: str, job: dict[str,
             print("Public URL type error!")
 
         resp = await supabase.from_(SUPABASE_TABLE).update({
-            "removed_bg_image_url": public_url
+            "removed_bg_image_url": public_url,
+            "status": "finished"
         }).eq("job_id", job_id).execute()
 
         return public_url
