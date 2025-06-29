@@ -7,7 +7,7 @@ POLL_INTERVAL = 5
 def poll_job_status(job_id: str):
     url = f"{BASE_URL}/job-status/{job_id}"
     while True:
-        resp = requests.post(url)
+        resp = requests.get(url)
         try:
             resp.raise_for_status()
         except requests.HTTPError as e:
@@ -27,6 +27,6 @@ def poll_job_status(job_id: str):
         else:
             time.sleep(POLL_INTERVAL)
 
-job_id = "c54927ad-ee20-4031-b5fe-b95810e15966" 
+job_id = "7d0fae61-9baf-429d-b12c-dacd3d9dd490" 
 poll_job_status(job_id)
 

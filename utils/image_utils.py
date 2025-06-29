@@ -8,7 +8,7 @@ def process_mask(mask_url: str, job: dict[str, str]) -> bytes:
         resp = requests.get(mask_url)
         mask = Image.open(BytesIO(resp.content)).convert("L")
 
-        resp2 = requests.get(job["public_url"])
+        resp2 = requests.get(job["image_url"])
         img = Image.open(BytesIO(resp2.content)).convert("RGBA")
         img.putalpha(mask)
         
