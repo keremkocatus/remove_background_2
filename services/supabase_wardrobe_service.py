@@ -48,14 +48,14 @@ async def upload_original_image(user_id: str, image_file: UploadFile, category: 
         print(f"Error in upload_original_image: {error}")
         return None
 
-async def insert_job_record(job_id: str, image_url: str, user_id: str, category: str, long_top: bool = False) -> dict:
+async def insert_job_record(job_id: str, image_url: str, user_id: str, category: str, is_long_top: bool = False) -> dict:
     try:
         supabase = await get_supabase_client()
         response = await supabase.from_(BUCKET_NAME).insert({
             "image_url": image_url,
             "user_id": user_id,
             "category": category,
-            "is_long_top": long_top,
+            "is_long_top": is_long_top,
             "job_id": job_id,
             "status": "processing"
         }).execute()

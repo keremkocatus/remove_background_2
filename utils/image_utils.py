@@ -17,13 +17,25 @@ def process_mask(mask_url: str, job: dict[str, str]) -> bytes:
         img = Image.merge("RGBA", (r, g, b, alpha_smoothed))
         
         buf = BytesIO()
-        img.save(buf, format="PNG", quality=85, optimize=True)
+        img.save(buf, format="PNG", quality=90, optimize=True)
         
         return buf.getvalue()
     except Exception as e:
         print(f"Error in process_mask: {e}")
         raise
 
+def get_image_from_url(url: str):
+    try:
+        resp = requests.get(url)
+        img = Image.open(BytesIO(resp.content))
+
+        buf = BytesIO()
+        img.save(buf, format="PNG", quality=90, optimize=True)
+
+        return buf.getvalue()
+    except Exception as e:
+        print(f"Error in get_image_from_url: {e}")
+        raise
 # Resize and save image as JPEG
 def compress_image(img: bytes, max_size: int = 1024, quality: int = 85):
     try:

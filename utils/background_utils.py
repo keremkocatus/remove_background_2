@@ -1,4 +1,4 @@
-from utils.image_utils import process_mask
+from utils.image_utils import process_mask, get_image_from_url
 from services.supabase_wardrobe_service import upload_background_removed_image, mark_job_failed
 from starlette.concurrency import run_in_threadpool
 
@@ -19,12 +19,15 @@ async def start_quality_background_process(prediction: dict, job_id: str, job: d
         print(f"Error in start_quality_background_process for job {job_id}: {error}")
         raise
 
-async def start_low_quality_background_process(prediction: dict, job_id: str, job: dict[str, str]):
+async def start_fast_background_process(prediction: dict, job_id: str, job: dict[str, str]):
     try:
-        print(prediction["output"])
-        print(type(prediction["output"]))
+        img = await run_in_threadpool(get_image_from_url,prediction["output"])
+        result_url = await upload_background_removed_image(img, job_id, job)
+        
+        job["status"] = "finished"
+        job["result_url"] = result_url
 
     except Exception as error:
         await mark_job_failed(job_id)
-        print(f"Error in start_low_quality_background_process for job {job_id}: {error}")
+        print(f"Error in start_fast_background_process for job {job_id}: {error}")
         raise

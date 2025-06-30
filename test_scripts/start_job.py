@@ -18,7 +18,7 @@ data = {
     "user_id":   user_id,           
     "category":  category,
     "is_long_top": is_long_top,
-    "is_low_quality": False
+    "is_fast": False
 }
 
 # 5) POST
