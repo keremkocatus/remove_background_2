@@ -15,7 +15,7 @@ replicate_client = replicate.Client(api_token=replicate_api_token)
 
 QUALITY_MODEL_ID = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c"
 FAST_MODEL_ID = "a029dff38972b5fda4ec5d75d7d1cd25aeff621d2cf4946a41055d7db66b80bc"
-REPLICATE_WEBHOOK_URL = "https://373b-92-44-149-43.ngrok-free.app"
+REPLICATE_WEBHOOK_URL = "https://3dcf-161-9-86-254.ngrok-free.app"
 
 # In-memory registry for pending jobs
 JOB_REGISTRY: dict[str, dict] = {}

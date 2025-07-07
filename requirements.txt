@@ -7,3 +7,4 @@ pillow
 requests
 python-multipart
 supabase
+openai

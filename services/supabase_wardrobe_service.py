@@ -5,12 +5,13 @@ from dotenv import load_dotenv
 from fastapi import UploadFile
 from supabase import AsyncClient, create_async_client
 from utils.url_utils import clean_url
+from services.openai_service import generate_image_caption
 
 load_dotenv()
 
 WARDROBE_BUCKET = os.getenv("SUPABASE_URL")
 WARDROBE_KEY = os.getenv("SUPABASE_ANON_KEY")
-BUCKET_NAME = "deneme"
+BUCKET_NAME = "wardrobe"
 
 # Lazy-initialized Supabase client
 _supabase_client: AsyncClient | None = None
@@ -50,14 +51,17 @@ async def upload_original_image(user_id: str, image_file: UploadFile, category: 
 
 async def insert_job_record(job_id: str, image_url: str, user_id: str, category: str, is_long_top: bool = False) -> dict:
     try:
+        print(image_url)
         supabase = await get_supabase_client()
+        caption = await get_caption_of_image(image_url, category)
         response = await supabase.from_(BUCKET_NAME).insert({
             "image_url": image_url,
             "user_id": user_id,
             "category": category,
             "is_long_top": is_long_top,
             "job_id": job_id,
-            "status": "processing"
+            "status": "processing",
+            "caption": caption
         }).execute()
         
         return {"status": "Job successfully inserted into database"}
@@ -97,3 +101,36 @@ async def mark_job_failed(job_id: str) -> None:
     await supabase.from_(BUCKET_NAME).update({
         "status": "failed"
     }).eq("job_id", job_id).execute()
+
+async def get_caption_of_image(image_url: str, category: str) -> str:
+    """
+    Get or generate a caption for an image using ChatGPT based on its category
+    
+    Args:
+        image_url: The URL of the image to get caption for
+    
+    Returns:
+        Generated caption as a string
+    """
+    try:
+        supabase = await get_supabase_client()
+        
+        # First, check if we already have a caption    
+        # If no caption exists, generate one using ChatGPT
+
+        print("Generating caption")
+        caption = await generate_image_caption(image_url, category)
+        print("Caption generated", caption)
+            # Save the generated caption back to the database
+        await supabase.from_(BUCKET_NAME).update({
+                "caption": caption
+            }).eq("image_url", image_url).execute()
+            
+        return caption
+    except Exception as error:
+            # Image not found in database
+            return "Image not found in database"
+            
+    except Exception as error:
+        print(f"Error in get_caption_of_image: {error}")
+        return "Error generating caption"

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Request
-from services.supabase_wardrobe_service import upload_original_image, insert_job_record
+from services.supabase_wardrobe_service import upload_original_image, insert_job_record, get_caption_of_image
 from services.replicate_rembg_service import (register_job,trigger_prediction,get_job_status,
                                               handle_quality_webhook,handle_fast_webhook,)
 import asyncio
@@ -10,6 +10,7 @@ router = APIRouter()
 async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: UploadFile = File(...),
                             is_fast: bool = Form(...), category: str = Form(...), is_long_top: bool = Form(False)):
     try:
+        print(is_fast)
         public_url, bucket_id = await upload_original_image(user_id, clothe_image, category)
         job_id = register_job(public_url, user_id, bucket_id, category, is_long_top)
         await insert_job_record(job_id, public_url, user_id, category, is_long_top)
@@ -34,6 +35,29 @@ async def fetch_job_status(job_id: str):
         raise HTTPException(
             status_code=500,
             detail=f"Error fetching job status for {job_id}: {e}"
+        )
+
+@router.get("/wardrobe/caption")
+async def generate_caption(image_url: str):
+    """
+    Generate or retrieve a caption for an image using ChatGPT
+    
+    Args:
+        image_url: The URL of the image to get caption for
+    
+    Returns:
+        Generated caption
+    """
+    try:
+        caption = await get_caption_of_image(image_url)
+        return {
+            "image_url": image_url,
+            "caption": caption
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating caption: {e}"
         )
 
 @router.post("/webhook/replicate/fast")
