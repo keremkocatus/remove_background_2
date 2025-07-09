@@ -1,5 +1,5 @@
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Request
-from services.supabase_wardrobe_service import upload_original_image, insert_job_record, get_caption_of_image
+from services.supabase_wardrobe_service import upload_original_image, insert_job_record
 from services.replicate_rembg_service import (register_job,trigger_prediction,get_job_status,
                                               handle_quality_webhook,handle_fast_webhook,)
 import asyncio
@@ -35,29 +35,6 @@ async def fetch_job_status(job_id: str):
         raise HTTPException(
             status_code=500,
             detail=f"Error fetching job status for {job_id}: {e}"
-        )
-
-@rembg_router.get("/wardrobe/caption")
-async def generate_caption(image_url: str):
-    """
-    Generate or retrieve a caption for an image using ChatGPT
-    
-    Args:
-        image_url: The URL of the image to get caption for
-    
-    Returns:
-        Generated caption
-    """
-    try:
-        caption = await get_caption_of_image(image_url)
-        return {
-            "image_url": image_url,
-            "caption": caption
-        }
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error generating caption: {e}"
         )
 
 @rembg_router.post("/webhook/replicate/fast")
