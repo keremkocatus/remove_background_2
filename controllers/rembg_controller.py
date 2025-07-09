@@ -4,9 +4,9 @@ from services.replicate_rembg_service import (register_job,trigger_prediction,ge
                                               handle_quality_webhook,handle_fast_webhook,)
 import asyncio
 
-router = APIRouter()
+rembg_router = APIRouter()
 
-@router.post("/wardrobe/remove-background")
+@rembg_router.post("/wardrobe/remove-background")
 async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: UploadFile = File(...),
                             is_fast: bool = Form(...), category: str = Form(...), is_long_top: bool = Form(False)):
     try:
@@ -25,7 +25,7 @@ async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: Up
             detail=f"Error in wardrobe background removal: {e}"
         )
 
-@router.get("/job-status/{job_id}")
+@rembg_router.get("/job-status/{job_id}")
 async def fetch_job_status(job_id: str):
     try:
         return await get_job_status(job_id)
@@ -37,7 +37,7 @@ async def fetch_job_status(job_id: str):
             detail=f"Error fetching job status for {job_id}: {e}"
         )
 
-@router.get("/wardrobe/caption")
+@rembg_router.get("/wardrobe/caption")
 async def generate_caption(image_url: str):
     """
     Generate or retrieve a caption for an image using ChatGPT
@@ -60,7 +60,7 @@ async def generate_caption(image_url: str):
             detail=f"Error generating caption: {e}"
         )
 
-@router.post("/webhook/replicate/fast")
+@rembg_router.post("/webhook/replicate/fast")
 async def replicate_fast_webhook(request: Request):
     try:
         payload = await request.json()
@@ -75,7 +75,7 @@ async def replicate_fast_webhook(request: Request):
             detail=f"Error processing fast webhook: {e}"
         )
 
-@router.post("/webhook/replicate/quality")
+@rembg_router.post("/webhook/replicate/quality")
 async def replicate_quality_webhook(request: Request):
     try:
         payload = await request.json()

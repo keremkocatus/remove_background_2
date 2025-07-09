@@ -11,7 +11,7 @@ load_dotenv()
 
 WARDROBE_BUCKET = os.getenv("SUPABASE_URL")
 WARDROBE_KEY = os.getenv("SUPABASE_ANON_KEY")
-BUCKET_NAME = "wardrobe"
+BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 
 # Lazy-initialized Supabase client
 _supabase_client: AsyncClient | None = None
@@ -96,6 +96,33 @@ async def upload_background_removed_image(processed_image: bytes, job_id: str, j
         print(f"Error in upload_background_removed_image: {error}")
         return None
 
+async def upload_enhanced_image(processed_image: bytes, job_id: str, job: dict[str, str]) -> str:
+    try:
+        supabase = await get_supabase_client()
+        storage_path = f"{job['user_id']}/{job['bucket_id']}/enhanced_{job['category']}.png"
+
+        upload_response = await supabase.storage.from_(BUCKET_NAME).upload(
+            file=processed_image,
+            path=storage_path,
+            file_options={"cache-control": "3600", "upsert": "false"}
+        )
+
+        public_url_response = await supabase.storage.from_(BUCKET_NAME).get_public_url(storage_path)
+        if isinstance(public_url_response, str):
+            public_url = clean_url(public_url_response)
+        else:
+            public_url = clean_url(public_url_response.get("publicURL") or public_url_response.get("public_url"))
+
+        update_response = await supabase.from_(BUCKET_NAME).update({
+            "enhanced_image_url": public_url,
+            "status": "finished"
+        }).eq("job_id", job_id).execute()
+
+        return public_url
+    except Exception as error:
+        print(f"Error in upload_enhanced_image: {error}")
+        return None
+
 async def mark_job_failed(job_id: str) -> None:
     supabase = await get_supabase_client()
     await supabase.from_(BUCKET_NAME).update({
@@ -122,7 +149,7 @@ async def get_caption_of_image(image_url: str, category: str) -> str:
         caption = await generate_image_caption(image_url, category)
         print("Caption generated", caption)
             # Save the generated caption back to the database
-        await supabase.from_(BUCKET_NAME).update({
+        resp = await supabase.from_(BUCKET_NAME).update({
                 "caption": caption
             }).eq("image_url", image_url).execute()
             

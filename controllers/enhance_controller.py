@@ -1,15 +1,13 @@
 import asyncio
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException
+from fastapi import APIRouter, Form, HTTPException
 from services.replicate_enhance_service import get_job_status, register_job, trigger_prediction
 
-router = APIRouter()
+enhance_router = APIRouter()
 
-@router.post("/enhance-image")
-async def enhance_image(user_id: str = Form(...), clothe_image: UploadFile = File(...)):
+@enhance_router.post("/enhance-image")
+async def enhance_image(user_id: str = Form(...), clothe_image_url: str = Form(...)):
     try:
-    # Todo upload supabase
-        job_id = register_job(clothe_image, user_id)
-    # Todo insert jop record
+        job_id = register_job(clothe_image_url, user_id)
 
         loop = asyncio.get_running_loop()
         loop.create_task(trigger_prediction(job_id))
@@ -21,7 +19,7 @@ async def enhance_image(user_id: str = Form(...), clothe_image: UploadFile = Fil
             detail=f"Error in enhance image: {e}"
         )
     
-@router.get("/job-status/{job_id}")
+@enhance_router.get("/job-status/{job_id}")
 async def fetch_job_status(job_id: str):
     try:
         return await get_job_status(job_id)

@@ -13,9 +13,9 @@ load_dotenv()
 replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
 
-QUALITY_MODEL_ID = "ee871c19efb1941f55f66a3d7d960428c8a5afcb77449547fe8e5a3ab9ebc21c"
-FAST_MODEL_ID = "a029dff38972b5fda4ec5d75d7d1cd25aeff621d2cf4946a41055d7db66b80bc"
-REPLICATE_WEBHOOK_URL = "https://3dcf-161-9-86-254.ngrok-free.app"
+QUALITY_MODEL_ID = os.getenv("QUALITY_MODEL_ID")
+FAST_MODEL_ID = os.getenv("FAST_MODEL_ID")
+REMBG_WEBHOOK_URL = os.getenv("REPLICATE_WEBHOOK_URL")
 
 # In-memory registry for pending jobs
 JOB_REGISTRY: dict[str, dict] = {}
@@ -50,7 +50,7 @@ async def trigger_prediction(job_id: str, is_fast: bool):
             "background_type": "rgba",
         }
         model_id = FAST_MODEL_ID
-        webhook_url = f"{REPLICATE_WEBHOOK_URL}/webhook/replicate/fast"
+        webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/fast"
     else:
         prediction_input = {
             "image": job["image_url"],
@@ -59,7 +59,7 @@ async def trigger_prediction(job_id: str, is_fast: bool):
             "negative_mask_prompt": negative_mask_prompt,
         }
         model_id = QUALITY_MODEL_ID
-        webhook_url = f"{REPLICATE_WEBHOOK_URL}/webhook/replicate/quality"
+        webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/quality"
 
     prediction = await replicate_client.predictions.async_create(
         version=model_id,
