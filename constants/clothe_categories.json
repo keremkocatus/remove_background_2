@@ -1,0 +1,134 @@
+{
+    "categories": {
+      "Tops": [
+        "T-Shirt",
+        "Shirt",
+        "Blouse",
+        "Sweater",
+        "Hoodie",
+        "Tank Top",
+        "Crop Top",
+        "Long Sleeve Shirt",
+        "Polo Shirt",
+        "Sweatshirt",
+        "Cardigan",
+        "Bodysuit",
+        "Tube Top"
+      ],
+      "Bottoms": [
+        "Jeans",
+        "Pants",
+        "Shorts",
+        "Skirt",
+        "Mini Skirt",
+        "Leggings",
+        "Cargo Pants",
+        "Joggers",
+        "Culottes",
+        "Overalls",
+        "Skort"
+      ],
+      "Dresses": [
+        "Casual Dress",
+        "Evening Dress",
+        "Maxi Dress",
+        "Midi Dress",
+        "Mini Dress",
+        "Cocktail Dress",
+        "Wrap Dress",
+        "Slip Dress",
+        "Sweater Dress"
+      ],
+      "Outerwear": [
+        "Jacket",
+        "Coat",
+        "Blazer",
+        "Denim Jacket",
+        "Leather Jacket",
+        "Trench Coat",
+        "Puffer Jacket",
+        "Windbreaker",
+        "Raincoat",
+        "Vest"
+      ],
+      "Underwear & Sleepwear": [
+        "Bra",
+        "Panties",
+        "Boxers",
+        "Briefs",
+        "Lingerie",
+        "Thermal Underwear",
+        "Pajamas",
+        "Robe",
+        "Camisole",
+        "Sleep Shirt"
+      ],
+      "Activewear": [
+        "Sports Bra",
+        "Athletic Shorts",
+        "Yoga Pants",
+        "Gym Leggings",
+        "Workout Top",
+        "Track Jacket",
+        "Running Shorts",
+        "Compression Shirt"
+      ],
+      "Swimwear": [
+        "Bikini",
+        "One Piece",
+        "Swim Trunks",
+        "Board Shorts",
+        "Rash Guard",
+        "Tankini"
+      ],
+      "Footwear": [
+        "Sneakers",
+        "Boots",
+        "Sandals",
+        "Heels",
+        "Loafers",
+        "Flats",
+        "Flip Flops",
+        "Dress Shoes",
+        "Slippers",
+        "Running Shoes"
+      ],
+      "Accessories": [
+        "Hat",
+        "Scarf",
+        "Gloves",
+        "Belt",
+        "Sunglasses",
+        "Watch",
+        "Necklace",
+        "Earrings",
+        "Bracelet",
+        "Bag",
+        "Backpack",
+        "Cap",
+        "Hair Accessories",
+        "Tie",
+        "Face Mask"
+      ],
+      "Traditional & Religious": [
+        "Hijab",
+        "Abaya",
+        "Thobe",
+        "Kurta",
+        "Kimono",
+        "Sari",
+        "Kaftan"
+      ],
+      "Formalwear": [
+        "Suit",
+        "Blazer",
+        "Dress Shirt",
+        "Dress Pants",
+        "Tuxedo",
+        "Formal Dress",
+        "Waistcoat",
+        "Evening Gown"
+      ]
+    }
+  }
+  
