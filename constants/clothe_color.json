@@ -1,0 +1,69 @@
+{
+  "color_palettes": {
+    "Neutrals": [
+      { "name": "White", "hex": "#FFFFFF" },
+      { "name": "Black", "hex": "#000000" },
+      { "name": "Gray", "hex": "#808080" },
+      { "name": "Light Gray", "hex": "#D3D3D3" },
+      { "name": "Charcoal", "hex": "#36454F" },
+      { "name": "Beige", "hex": "#F5F5DC" },
+      { "name": "Ivory", "hex": "#FFFFF0" },
+      { "name": "Cream", "hex": "#FFFDD0" },
+      { "name": "Taupe", "hex": "#483C32" }
+    ],
+    "Warm Tones": [
+      { "name": "Red", "hex": "#FF0000" },
+      { "name": "Burgundy", "hex": "#800020" },
+      { "name": "Coral", "hex": "#FF7F50" },
+      { "name": "Orange", "hex": "#FFA500" },
+      { "name": "Rust", "hex": "#B7410E" },
+      { "name": "Mustard", "hex": "#FFDB58" },
+      { "name": "Peach", "hex": "#FFE5B4" }
+    ],
+    "Cool Tones": [
+      { "name": "Blue", "hex": "#0000FF" },
+      { "name": "Navy", "hex": "#000080" },
+      { "name": "Sky Blue", "hex": "#87CEEB" },
+      { "name": "Teal", "hex": "#008080" },
+      { "name": "Turquoise", "hex": "#40E0D0" },
+      { "name": "Green", "hex": "#008000" },
+      { "name": "Mint", "hex": "#98FF98" },
+      { "name": "Olive", "hex": "#808000" }
+    ],
+    "Pastels": [
+      { "name": "Pastel Pink", "hex": "#FFD1DC" },
+      { "name": "Pastel Yellow", "hex": "#FFFFB3" },
+      { "name": "Pastel Green", "hex": "#B5EAD7" },
+      { "name": "Pastel Blue", "hex": "#AEC6CF" },
+      { "name": "Lavender", "hex": "#E6E6FA" },
+      { "name": "Lilac", "hex": "#C8A2C8" }
+    ],
+    "Earth Tones": [
+      { "name": "Brown", "hex": "#8B4513" },
+      { "name": "Khaki", "hex": "#F0E68C" },
+      { "name": "Camel", "hex": "#C19A6B" },
+      { "name": "Sage", "hex": "#BCB88A" },
+      { "name": "Terracotta", "hex": "#E2725B" }
+    ],
+    "Dark Tones": [
+      { "name": "Dark Blue", "hex": "#00008B" },
+      { "name": "Dark Green", "hex": "#006400" },
+      { "name": "Maroon", "hex": "#800000" },
+      { "name": "Dark Gray", "hex": "#A9A9A9" },
+      { "name": "Plum", "hex": "#8E4585" }
+    ],
+    "Vibrant Colors": [
+      { "name": "Hot Pink", "hex": "#FF69B4" },
+      { "name": "Lime Green", "hex": "#32CD32" },
+      { "name": "Electric Blue", "hex": "#7DF9FF" },
+      { "name": "Violet", "hex": "#8F00FF" },
+      { "name": "Bright Yellow", "hex": "#FFFF00" }
+    ],
+    "Denim Shades": [
+      { "name": "Light Wash Denim", "hex": "#B0C4DE" },
+      { "name": "Mid Wash Denim", "hex": "#6A7BA2" },
+      { "name": "Dark Wash Denim", "hex": "#2A4F73" },
+      { "name": "Acid Wash Denim", "hex": "#C0D6E4" }
+    ]
+  }
+}
