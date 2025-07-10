@@ -4,15 +4,15 @@ import asyncio
 from dotenv import load_dotenv
 from fastapi import UploadFile
 from supabase import AsyncClient, create_async_client
+from services.caption_service import get_caption_for_image
 from utils.caption_tools.hex_utils import convert_colors_to_hex_format
 from utils.url_utils import clean_url
-from services.openai_service import generate_structured_caption
 
 load_dotenv()
 
 WARDROBE_BUCKET = os.getenv("SUPABASE_URL")
 WARDROBE_KEY = os.getenv("SUPABASE_ANON_KEY")
-BUCKET_NAME = "wardrobe"
+BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 
 # Lazy-initialized Supabase client
 _supabase_client: AsyncClient | None = None
@@ -66,31 +66,17 @@ async def insert_job_record(
     try:
         print(image_url)
         supabase = await get_supabase_client()
-        caption = await get_caption_of_image(image_url, category)
-
-        response = (
-            await supabase.from_(BUCKET_NAME)
-            .insert(
-                {
-                    "image_url": image_url,
-                    "user_id": user_id,
-                    "category": category,
-                    "is_long_top": is_long_top,
-                    "job_id": job_id,
-                    "status": "processing",
-                    "caption": caption.get("ai_context"),
-                }
-            )
-            .execute()
-        )
-
-        # Get the inserted wardrobe item ID
-        if response.data and len(response.data) > 0:
-            wardrobe_item_id = response.data[0]["id"]
-
-            # Insert detailed clothes information
-            await insert_clothes_detail(wardrobe_item_id, user_id, caption)
-
+        caption = await get_caption_for_image(image_url, category)
+        response = await supabase.from_(BUCKET_NAME).insert({
+            "image_url": image_url,
+            "user_id": user_id,
+            "category": category,
+            "is_long_top": is_long_top,
+            "job_id": job_id,
+            "status": "processing",
+            "caption": caption
+        }).execute()
+        
         return {"status": "Job successfully inserted into database"}
     except Exception as error:
         print(f"Error in insert_job_record: {error}")
@@ -179,6 +165,32 @@ async def upload_background_removed_image(
         print(f"Error in upload_background_removed_image: {error}")
         return None
 
+async def upload_enhanced_image(processed_image: bytes, job_id: str, job: dict[str, str]) -> str:
+    try:
+        supabase = await get_supabase_client()
+        storage_path = f"{job['user_id']}/{job['bucket_id']}/enhanced.png"
+
+        upload_response = await supabase.storage.from_(BUCKET_NAME).upload(
+            file=processed_image,
+            path=storage_path,
+            file_options={"cache-control": "3600", "upsert": "false"}
+        )
+
+        public_url_response = await supabase.storage.from_(BUCKET_NAME).get_public_url(storage_path)
+        if isinstance(public_url_response, str):
+            public_url = clean_url(public_url_response)
+        else:
+            public_url = clean_url(public_url_response.get("publicURL") or public_url_response.get("public_url"))
+
+        update_response = await supabase.from_(BUCKET_NAME).update({
+            "enhanced_image_url": public_url,
+            "status": "finished"
+        }).eq("removed_bg_image_url", job["image_url"]).execute()
+
+        return public_url
+    except Exception as error:
+        print(f"Error in upload_enhanced_image: {error}")
+        return None
 
 async def mark_job_failed(job_id: str) -> None:
     supabase = await get_supabase_client()
@@ -187,36 +199,3 @@ async def mark_job_failed(job_id: str) -> None:
     ).execute()
 
 
-async def get_caption_of_image(image_url: str, category: str) -> str:
-    """
-    Get or generate a caption for an image using ChatGPT based on its category
-
-    Args:
-        image_url: The URL of the image to get caption for
-
-    Returns:
-        Generated caption as a string
-    """
-    try:
-        supabase = await get_supabase_client()
-
-        # First, check if we already have a caption
-        # If no caption exists, generate one using ChatGPT
-
-        print("Generating caption", image_url, category)
-        # The caption generator only requires the image URL (category is inferred by the model).
-        caption = await generate_structured_caption(image_url)
-        print("Caption generated", caption)
-        # Save the generated caption back to the database
-        await supabase.from_(BUCKET_NAME).update({"caption": caption}).eq(
-            "image_url", image_url
-        ).execute()
-
-        return caption
-    except Exception as error:
-        # Image not found in database
-        return "Image not found in database"
-
-    except Exception as error:
-        print(f"Error in get_caption_of_image: {error}")
-        return "Error generating caption"

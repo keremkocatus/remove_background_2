@@ -4,6 +4,7 @@ import uuid
 import replicate
 from fastapi import HTTPException
 from dotenv import load_dotenv
+from utils.background_utils import start_enhance_background_process
 
 from services.supabase_wardrobe_service import mark_job_failed
 from utils.webhook_utils import get_job_id_by_prediction
@@ -12,8 +13,8 @@ load_dotenv()
 replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
 
-MODEL_ID = "black-forest-labs/flux-kontext-pro"
-REPLICATE_WEBHOOK_URL = "https://3dcf-161-9-86-254.ngrok-free.app"
+MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
+ENHANCE_WEBHOOK_URL = f"{os.getenv("REPLICATE_WEBHOOK_URL")}/webhook/replicate-enhance"
 
 # In-memory registry for pending jobs
 ENHANCE_REGISTRY: dict[str, dict] = {}
@@ -41,26 +42,24 @@ async def trigger_prediction(job_id: str):
         "output_format": "jpg"
     }
 
-    webhook_url = f"{REPLICATE_WEBHOOK_URL}/webhook/replicate-enhance"
-
     prediction = await replicate_client.predictions.async_create(
         version=MODEL_ID,
         input=prediction_input,
-        webhook=webhook_url,
+        webhook=ENHANCE_WEBHOOK_URL,
         webhook_events_filter=["completed"],
     )
 
     ENHANCE_REGISTRY[job_id]["prediction_id"] = prediction.id
 
-# Handle webhook event for fast prediction completion
-async def handle_fast_webhook(payload: dict):
+# Handle webhook event for enhance prediction completion
+async def handle_enhance_webhook(payload: dict):
     job_id = None
     try:
         prediction_id = payload["id"]
         job_id, job = get_job_id_by_prediction(prediction_id, ENHANCE_REGISTRY)
         
         loop = asyncio.get_running_loop()
-        # loop.create_task(start_fast_background_process(payload, job_id, job))
+        loop.create_task(start_enhance_background_process(payload, job_id, job))
     except Exception as e:
         if job_id:
             await mark_job_failed(job_id)
