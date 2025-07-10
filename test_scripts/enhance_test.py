@@ -10,8 +10,8 @@ def test_enhance_image():
     # Replace with your actual test values
     payload = {
         "user_id": "fc39d9f5-dfba-4f5f-bc73-f5638f8e6208",
-        "bucket_id": "efa5f4e9-87a6-43b4-91ce-cbe9b6dddd75",
-        "clothe_image_url": "https://akrxtjnuguvceywyadab.supabase.co/storage/v1/object/public/deneme/fc39d9f5-dfba-4f5f-bc73-f5638f8e6208/efa5f4e9-87a6-43b4-91ce-cbe9b6dddd75/bg_removed_bottoms.png"
+        "bucket_id": "adec8af2-c488-4007-afa5-72cd51a18950",
+        "clothe_image_url": "https://akrxtjnuguvceywyadab.supabase.co/storage/v1/object/public/deneme/fc39d9f5-dfba-4f5f-bc73-f5638f8e6208/adec8af2-c488-4007-afa5-72cd51a18950/bg_removed_tops.png"
     }
 
     try:

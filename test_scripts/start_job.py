@@ -5,12 +5,12 @@ url = "http://localhost:8000/wardrobe/remove-background"
 
 # 2) UUID'yi stringe çevir
 user_id   = "fc39d9f5-dfba-4f5f-bc73-f5638f8e6208"
-category  = "bottoms"
+category  = "tops"
 is_long_top = False
 
 # 3) Dosya
 files = {
-    "clothe_image": open("./images/skirt.jpg", "rb")
+    "clothe_image": open("./images/test_clothe_outfit_ai.jpg", "rb")
 }
 
 # 4) Form verisi (string-boolean)
