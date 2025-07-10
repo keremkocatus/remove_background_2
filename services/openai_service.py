@@ -1,3 +1,4 @@
+import asyncio
 import os
 import json
 from openai import AsyncOpenAI
@@ -14,6 +15,7 @@ client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # ---- Caption generation via OpenAI tool call ----
 async def generate_structured_caption(image_url: str) -> dict | None:
     print("image_url", image_url)
+    await asyncio.sleep(2)
     try:
         tools = [get_caption_tool_schema()]
         messages = [

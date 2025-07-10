@@ -66,7 +66,7 @@ async def insert_job_record(
     try:
         print(image_url)
         supabase = await get_supabase_client()
-        caption = await get_caption_for_image(image_url, category)
+        caption = await get_caption_for_image(image_url)
         response = await supabase.from_(BUCKET_NAME).insert({
             "image_url": image_url,
             "user_id": user_id,
@@ -74,7 +74,7 @@ async def insert_job_record(
             "is_long_top": is_long_top,
             "job_id": job_id,
             "status": "processing",
-            "caption": caption
+            "caption": caption["ai_context"]
         }).execute()
         
         return {"status": "Job successfully inserted into database"}
