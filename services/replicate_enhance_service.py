@@ -51,8 +51,8 @@ async def trigger_prediction(job_id: str):
 
     ENHANCE_REGISTRY[job_id]["prediction_id"] = prediction.id
 
-# Handle webhook event for fast prediction completion
-async def handle_fast_webhook(payload: dict):
+# Handle webhook event for enhance prediction completion
+async def handle_enhance_webhook(payload: dict):
     job_id = None
     try:
         prediction_id = payload["id"]

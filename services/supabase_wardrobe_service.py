@@ -99,7 +99,7 @@ async def upload_background_removed_image(processed_image: bytes, job_id: str, j
 async def upload_enhanced_image(processed_image: bytes, job_id: str, job: dict[str, str]) -> str:
     try:
         supabase = await get_supabase_client()
-        storage_path = f"{job['user_id']}/{job['bucket_id']}/enhanced_{job['category']}.png"
+        storage_path = f"{job['user_id']}/{job['bucket_id']}/enhanced.png"
 
         upload_response = await supabase.storage.from_(BUCKET_NAME).upload(
             file=processed_image,
