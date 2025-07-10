@@ -116,7 +116,7 @@ async def upload_enhanced_image(processed_image: bytes, job_id: str, job: dict[s
         update_response = await supabase.from_(BUCKET_NAME).update({
             "enhanced_image_url": public_url,
             "status": "finished"
-        }).eq("job_id", job_id).execute()
+        }).eq("removed_bg_image_url", job["image_url"]).execute()
 
         return public_url
     except Exception as error:
