@@ -63,7 +63,7 @@ async def trigger_prediction(job_id: str, is_fast: bool):
             "background_type": "rgba",
         }
         model_id = FAST_MODEL_ID
-        webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/fast"
+        webhook_url = f"{REMBG_WEBHOOK_URL}/rembg/webhook/replicate/fast"
     else:
         prediction_input = {
             "image": job["image_url"],
@@ -72,7 +72,7 @@ async def trigger_prediction(job_id: str, is_fast: bool):
             "negative_mask_prompt": negative_mask_prompt,
         }
         model_id = QUALITY_MODEL_ID
-        webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/quality"
+        webhook_url = f"{REMBG_WEBHOOK_URL}/rembg/webhook/replicate/quality"
 
     prediction = await replicate_client.predictions.async_create(
         version=model_id,
