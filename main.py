@@ -18,9 +18,9 @@ def create_app() -> FastAPI:
     )
 
     # Router’ları ekle
-    app.include_router(rembg_router)
-    app.include_router(enhance_router)
-    app.include_router(caption_router)
+    app.include_router(rembg_router, prefix="/rembg")
+    app.include_router(enhance_router, prefix="/enhance")
+    app.include_router(caption_router, prefix="/caption")
 
     return app
 
