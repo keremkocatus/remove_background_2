@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from services.supabase_wardrobe_service import get_caption_for_image
+from services.caption_services.caption_service import get_caption_for_image
 
 # Create a dedicated router for image captioning
 caption_router = APIRouter()

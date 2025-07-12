@@ -4,7 +4,7 @@ import replicate
 import asyncio
 from fastapi import HTTPException
 from dotenv import load_dotenv
-from services.supabase_wardrobe_service import mark_job_failed
+from services.supabase_services.fail_service import mark_job_failed
 from utils.webhook_utils import get_job_id_by_prediction
 from utils.prompt_utils import get_mask_prompts
 from utils.background_utils import (
@@ -25,7 +25,7 @@ JOB_REGISTRY: dict[str, dict] = {}
 
 
 # Register a new background-removal job and return its identifier
-def register_job(
+def register_rembg_job(
     image_url: str,
     user_id: str,
     bucket_id: str,

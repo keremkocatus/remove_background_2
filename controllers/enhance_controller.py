@@ -1,10 +1,10 @@
 import asyncio
 from fastapi import APIRouter, Form, HTTPException, Request
-from services.replicate_enhance_service import (
+from services.replicate_services.enhance_service import (
     get_job_status,
-    register_job,
+    register_enhance_job,
     trigger_prediction,
-    handle_enhance_webhook,  # make sure this exists in your service
+    handle_enhance_webhook, 
 )
 
 enhance_router = APIRouter()
@@ -16,7 +16,7 @@ async def enhance_image(
     clothe_image_url: str = Form(...)
 ):
     try:
-        job_id = register_job(clothe_image_url, user_id, bucket_id)
+        job_id = register_enhance_job(clothe_image_url, user_id, bucket_id)
 
         loop = asyncio.get_running_loop()
         loop.create_task(trigger_prediction(job_id))
