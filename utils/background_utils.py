@@ -1,3 +1,4 @@
+from services.caption_service import get_caption_for_image
 from utils.image_utils import process_mask, get_image_from_url
 from services.supabase_wardrobe_service import upload_background_removed_image, mark_job_failed, upload_enhanced_image
 from starlette.concurrency import run_in_threadpool
@@ -43,4 +44,13 @@ async def start_enhance_background_process(prediction: dict, job_id: str, job: d
     except Exception as error:
         await mark_job_failed(job_id)
         print(f"Error in start_enhance_background_process for job {job_id}: {error}")
+        raise
+
+async def start_caption_background_process(image_url):
+    try:
+        caption = await get_caption_for_image(image_url)
+
+        return caption
+    except Exception as error:
+        print(f"Error in start_caption_background_process: {error}")
         raise

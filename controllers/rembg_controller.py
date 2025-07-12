@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Request
+from services.caption_service import get_caption_for_image
 from services.supabase_wardrobe_service import upload_original_image, insert_job_record
 from services.replicate_rembg_service import (register_job,trigger_prediction,get_job_status,
                                               handle_quality_webhook,handle_fast_webhook,)
@@ -16,6 +17,7 @@ async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: Up
         await insert_job_record(job_id, public_url, user_id, category, is_long_top)
 
         loop = asyncio.get_running_loop()
+        loop.create_task(get_caption_for_image(public_url))
         loop.create_task(trigger_prediction(job_id, is_fast))
 
         return {"job_id": job_id}

@@ -4,7 +4,7 @@ from services.supabase_wardrobe_service import get_caption_for_image
 # Create a dedicated router for image captioning
 caption_router = APIRouter()
 
-@caption_router.get("/caption")
+@caption_router.get("/get-caption")
 async def generate_caption(image_url: str):
     """
     Generate or retrieve a caption for an image using ChatGPT
