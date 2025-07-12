@@ -5,7 +5,6 @@ from services.replicate_services.enhance_service import (
     trigger_prediction,
     handle_enhance_webhook, 
 )
-from utils.registery import register_job
 
 enhance_router = APIRouter()
 
