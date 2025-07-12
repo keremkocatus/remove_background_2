@@ -13,7 +13,6 @@ rembg_router = APIRouter()
 async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: UploadFile = File(...),
                             is_fast: bool = Form(...), category: str = Form(...), is_long_top: bool = Form(False)):
     try:
-        print(is_fast)
         public_url, bucket_id = await upload_image(user_id, clothe_image, category)
         job_id = register_rembg_job(public_url, user_id, bucket_id, category, is_long_top)
         await insert_job_record(job_id, public_url, user_id, category, is_long_top)

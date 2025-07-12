@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from dotenv import load_dotenv
 
 from utils.background_utils import start_enhance_background_process
-from services.supabase_wardrobe_service import mark_job_failed
+from services.supabase_services.fail_service import mark_job_failed
 from utils.webhook_utils import get_job_id_by_prediction
 
 load_dotenv()
@@ -14,7 +14,7 @@ replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
 
 MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
-ENHANCE_WEBHOOK_URL = f"{os.getenv("REPLICATE_WEBHOOK_URL")}/webhook/replicate-enhance"
+ENHANCE_WEBHOOK_URL = f"{os.getenv("REPLICATE_WEBHOOK_URL")}/enhance/webhook/replicate-enhance"
 
 # In-memory registry for pending jobs
 ENHANCE_REGISTRY: dict[str, dict] = {}

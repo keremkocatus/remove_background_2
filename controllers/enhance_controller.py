@@ -9,7 +9,7 @@ from services.replicate_services.enhance_service import (
 
 enhance_router = APIRouter()
 
-@enhance_router.post("/enhance-image")
+@enhance_router.post("/wardrobe/enhance-image")
 async def enhance_image(
     user_id: str = Form(...),
     bucket_id: str = Form(...),

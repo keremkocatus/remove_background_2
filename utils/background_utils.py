@@ -1,7 +1,9 @@
-from services.caption_service import get_caption_for_image
-from utils.image_utils import process_mask, get_image_from_url
-from services.supabase_wardrobe_service import upload_background_removed_image, mark_job_failed, upload_enhanced_image
 from starlette.concurrency import run_in_threadpool
+
+from services.caption_services.caption_service import get_caption_for_image
+from utils.image_utils import process_mask, get_image_from_url
+from services.supabase_services.upload_service import upload_background_removed_image, upload_enhanced_image
+from services.supabase_services.fail_service import mark_job_failed
 
 async def start_quality_background_process(prediction: dict, job_id: str, job: dict[str, str]):
     try:

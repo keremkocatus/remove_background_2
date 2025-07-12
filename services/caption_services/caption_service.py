@@ -1,7 +1,7 @@
 import asyncio
 from supabase import AsyncClient
 from dotenv import load_dotenv
-from services.openai_service import generate_structured_caption
+from services.openai_services.openai_service import generate_structured_caption
 import os
 
 load_dotenv()
@@ -12,7 +12,7 @@ _supabase_client: AsyncClient | None = None
 _supabase_lock = asyncio.Lock()
 
 async def get_supabase_client() -> AsyncClient:
-    from services.supabase_wardrobe_service import get_supabase_client as _get
+    from services.supabase_services.client_service import get_supabase_client as _get
     return await _get()
 
 async def get_caption_for_image(image_url: str):
