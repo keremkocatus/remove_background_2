@@ -59,6 +59,7 @@ async def upload_original_image(
         print(f"Error in upload_original_image: {error}")
         return None
 
+
 async def insert_job_record(
     job_id: str, image_url: str, user_id: str, category: str, is_long_top: bool = False
 ) -> dict:
@@ -80,6 +81,7 @@ async def insert_job_record(
     except Exception as error:
         print(f"Error in insert_job_record: {error}")
         return None
+
 
 async def insert_clothes_detail(
     wardrobe_item_id: str, user_id: str, caption_data: dict
@@ -123,6 +125,7 @@ async def insert_clothes_detail(
     except Exception as error:
         print(f"Error in insert_clothes_detail: {error}")
         return None
+
 
 async def upload_background_removed_image(
     processed_image: bytes, job_id: str, job: dict[str, str]
