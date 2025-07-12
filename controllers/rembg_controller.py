@@ -1,27 +1,21 @@
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Request
+from fastapi import APIRouter, Form, HTTPException, Request
 import asyncio
 
 from services.caption_services.caption_service import get_caption_for_image
-from services.replicate_services.rembg_service import get_job_status, handle_fast_webhook, handle_quality_webhook, trigger_prediction
-from services.replicate_services.rembg_service import register_rembg_job
-from services.supabase_services.insert_service import insert_job_record
-from services.supabase_services.upload_service import upload_image
+from services.replicate_services.rembg_service import get_job_status, get_job_by_id ,handle_fast_webhook, handle_quality_webhook, trigger_prediction
 
 rembg_router = APIRouter()
 
 @rembg_router.post("/wardrobe/remove-background")
-async def wardrobe_background_removal(user_id: str = Form(...), clothe_image: UploadFile = File(...),
-                            is_fast: bool = Form(...), category: str = Form(...), is_long_top: bool = Form(False)):
+async def wardrobe_background_removal(job_id: str = Form(...), is_fast: bool = Form(True)):
     try:
-        public_url, bucket_id = await upload_image(user_id, clothe_image, category)
-        job_id = register_rembg_job(public_url, user_id, bucket_id, category, is_long_top)
-        await insert_job_record(job_id, public_url, user_id, category, is_long_top)
+        job = get_job_by_id(job_id)
 
         loop = asyncio.get_running_loop()
-        loop.create_task(get_caption_for_image(public_url))
+        loop.create_task(get_caption_for_image(job["image_url"]))
         loop.create_task(trigger_prediction(job_id, is_fast))
 
-        return {"job_id": job_id}
+        return {"status": "200 OK"}
     except Exception as e:
         raise HTTPException(
             status_code=500,
