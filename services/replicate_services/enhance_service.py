@@ -18,6 +18,11 @@ ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/enhance/webhook/rep
 async def trigger_prediction(job_id: str) -> None:
     job = get_job_by_id(job_id)
 
+    if job["rembg_url"] is not None:
+        image_url = job["rembg_url"]
+    else:
+        image_url = job["image_url"]
+
     prediction_input = {
         "prompt": (
             "Please extract the clothing item from the given real-world image and convert it into a clean, flat-lay digital version. "
@@ -25,7 +30,7 @@ async def trigger_prediction(job_id: str) -> None:
             "Remove the background, accessories, and shadows for a clear, studio-style presentation. "
             "The final output should resemble a catalog image with only the clothing item visible on a plain white or transparent background."
         ),
-        "input_image": job["image_url"],
+        "input_image": image_url,
         "output_format": "jpg"
     }
 

@@ -27,13 +27,18 @@ REMBG_WEBHOOK_URL = os.getenv("REPLICATE_WEBHOOK_URL")
 async def trigger_prediction(job_id: str, is_fast: bool):
     job = get_job_by_id(job_id)
 
+    if job["enhance_url"] is not None:
+        image_url = job["enhance_url"]
+    else:
+        image_url = job["image_url"]
+
     mask_prompt, negative_mask_prompt = get_mask_prompts(
         job["category"], job["is_long_top"]
     )
 
     if is_fast:
         prediction_input = {
-            "image": job["image_url"],
+            "image": image_url,
             "format": "png",
             "reverse": False,
             "threshold": -20,
