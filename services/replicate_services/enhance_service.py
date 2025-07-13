@@ -66,7 +66,7 @@ async def get_job_status(job_id: str) -> dict:
         return {"status": "processing"}
 
     if job["status"] == "finished":
-        result_url = job.get("enhanced_url")
+        result_url = job.get("enhance_url")
         return {"status": "finished", "result_url": result_url}
 
     raise HTTPException(status_code=500, detail="Unknown job status")

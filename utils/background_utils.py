@@ -41,7 +41,7 @@ async def start_enhance_background_process(prediction: dict, job_id: str, job: d
         result_url = await upload_enhanced_image(img, job)
         
         job["status"] = "finished"
-        job["enhanced_url"] = result_url
+        job["enhance_url"] = result_url
 
     except Exception as error:
         print(f"Error in start_enhance_background_process for job {job_id}: {error}")

@@ -21,7 +21,7 @@ def register_job(
         "category": category,
         "is_long_top": is_long_top,
         "rembg_url": None,
-        "enhanced_url": None,
+        "enhance_url": None,
     }
     return job_id
 
