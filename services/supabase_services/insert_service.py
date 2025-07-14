@@ -5,6 +5,7 @@ from utils.registery import get_job_by_id, update_registry
 import os
 
 BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
+CLOTHES_DETAIL_TABLE = os.getenv("CLOTHES_DETAIL_TABLE")
 
 async def insert_job_record(job_id: str) -> dict:
     try:
@@ -63,7 +64,7 @@ async def insert_clothes_detail(
         }
 
         response = (
-            await supabase.from_("clothes_detail").insert(detail_record).execute()
+            await supabase.from_(CLOTHES_DETAIL_TABLE).insert(detail_record).execute()
         )
 
         return {"status": "Clothes detail successfully inserted"}
