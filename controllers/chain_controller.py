@@ -25,7 +25,7 @@ async def _chain_remove_background(job_id: str, is_fast: bool):
         loop = asyncio.get_running_loop()
 
         # 1) Caption
-        loop.create_task(get_caption_for_image(job["image_url"]))
+        loop.create_task(get_caption_for_image(job))
         # 2) Background removal
         loop.create_task(trigger_rembg(job_id, is_fast))
     except Exception as e:

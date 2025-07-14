@@ -13,7 +13,6 @@ client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ---- Caption generation via OpenAI tool call ----
 async def generate_structured_caption(image_url: str) -> dict | None:
-    print("image_url", image_url)
     #await asyncio.sleep(2)
     try:
         tools = [get_caption_tool_schema()]
@@ -47,12 +46,9 @@ async def generate_structured_caption(image_url: str) -> dict | None:
                 "function": {"name": "submit_cloth_caption"},
             },
         )
-        print(response)
 
         assistant_msg = response.choices[0].message
-        print(assistant_msg)
         if assistant_msg.tool_calls:
-            print("asdfasfdasfdasfasf")
             call = assistant_msg.tool_calls[0]
             args = json.loads(call.function.arguments)
 
@@ -74,4 +70,4 @@ CATEGORY_PROMPTS = {
     "one-pieces": "Analyze this clothing item and provide a detailed description focusing on the one-piece garment. Describe the style, color, fabric texture, fit, and any unique features or patterns. Be specific about the garment type (e.g., jumpsuit, romper, overall dress).",
     "shoes": "Analyze this footwear and provide a detailed description. Describe the style, color, material, heel height (if applicable), and any unique features or patterns. Be specific about the shoe type (e.g., sneakers, boots, sandals, heels).",
     "accessories": "Analyze this accessory and provide a detailed description. Describe the style, color, material, and any unique features or patterns. Be specific about the accessory type (e.g., bag, hat, jewelry, belt, scarf).",
-}
+} 
