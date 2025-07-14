@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from services.openai_services.openai_service import generate_structured_caption
 import os
 
+from services.supabase_services.insert_service import insert_clothes_detail
+
 load_dotenv()
 BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 
@@ -15,7 +17,7 @@ async def get_supabase_client() -> AsyncClient:
     from services.supabase_services.client_service import get_supabase_client as _get
     return await _get()
 
-async def get_caption_for_image(image_url: str):
+async def get_caption_for_image(job: dict):
     """
     Retrieve existing caption or generate a new one via ChatGPT and save it.
 
@@ -28,14 +30,17 @@ async def get_caption_for_image(image_url: str):
     """
     try:
         # Generate a caption using OpenAI
-        caption = await generate_structured_caption(image_url)
+        caption = await generate_structured_caption(job["image_url"])
 
         # Save/update caption in Supabase
         supabase: AsyncClient = await get_supabase_client()
+
+        await insert_clothes_detail(job["wardrobe_id"], job["user_id"], caption)
         
         resp = await supabase.from_(BUCKET_NAME).update({
-            "caption": caption["ai_context"]
-        }).eq("image_url", image_url).execute()
+            "caption": caption["ai_context"],
+            "caption_status": "finished"
+        }).eq("image_url", job["image_url"]).execute()
 
         return caption
     except Exception as e:

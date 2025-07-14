@@ -12,7 +12,7 @@ async def wardrobe_background_removal(job_id: str = Form(...), is_fast: bool = F
         job = get_job_by_id(job_id)
 
         loop = asyncio.get_running_loop()
-        loop.create_task(get_caption_for_image(job["image_url"]))
+        loop.create_task(get_caption_for_image(job))
         loop.create_task(trigger_prediction(job_id, is_fast))
 
         return {"status": "200 OK"}

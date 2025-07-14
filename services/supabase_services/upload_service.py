@@ -55,7 +55,7 @@ async def upload_background_removed_image(processed_image: bytes, job_id: str, j
 
         await supabase.from_(BUCKET_NAME).update({
             "removed_bg_image_url": public_url,
-            "status": "finished"
+            "rembg_status": "finished"
         }).eq("job_id", job_id).execute()
 
         return public_url
@@ -80,7 +80,7 @@ async def upload_enhanced_image(processed_image: bytes, job: dict[str, str]) -> 
 
         await supabase.from_(BUCKET_NAME).update({
             "enhanced_image_url": public_url,
-            "status": "finished"
+            "enhance_status": "finished"
         }).eq("image_url", job["image_url"]).execute()
 
         return public_url

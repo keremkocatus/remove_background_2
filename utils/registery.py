@@ -13,8 +13,12 @@ def register_job(
     job_id = str(uuid.uuid4())
 
     JOB_REGISTRY[job_id] = {
-        "status": "processing",
-        "prediction_id": None,
+        "enhance_status": "processing",
+        "rembg_status": "processing",
+        "caption_status": "processing",
+        "enhance_prediction_id": None,
+        "rembg_prediction_id": None,
+        "wardrobe_id": None,
         "user_id": user_id,
         "bucket_id": bucket_id,
         "image_url": image_url,
@@ -28,10 +32,15 @@ def register_job(
 def get_job_by_id(job_id):
     return JOB_REGISTRY.get(job_id)
 
-def get_job_by_prediction_id(prediction_id: str) -> tuple[str, dict]:
+def get_job_by_prediction_id(prediction_id: str, is_enhance: bool) -> tuple[str, dict]:
     for job_id, job in JOB_REGISTRY.items():
-        if job.get("prediction_id") == prediction_id:
-            return job_id, job
+        if is_enhance:
+            if job.get("enhance_prediction_id") == prediction_id:
+                return job_id, job
+        else:
+            if job.get("rembg_prediction_id") == prediction_id:
+                return job_id, job
+
     raise ValueError(f"No job found with prediction ID: {prediction_id}")
 
 def update_registry(job_id: str, key: str, new_value):

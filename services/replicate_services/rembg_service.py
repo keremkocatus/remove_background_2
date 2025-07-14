@@ -63,7 +63,7 @@ async def trigger_prediction(job_id: str, is_fast: bool):
         webhook_events_filter=["completed"],
     )
     # prediction_id bilgisini registry'ye yaz
-    update_registry(job_id, "prediction_id", prediction.id)
+    update_registry(job_id, "rembg_prediction_id", prediction.id)
 
 
 # Handle webhook event for high-quality prediction completion
@@ -86,7 +86,7 @@ async def handle_fast_webhook(payload: dict):
     job_id = None
     try:
         prediction_id = payload["id"]
-        job_id, job = get_job_by_prediction_id(prediction_id)
+        job_id, job = get_job_by_prediction_id(prediction_id, is_enhance=False)
 
         loop = asyncio.get_running_loop()
         loop.create_task(start_fast_background_process(payload, job_id, job))
@@ -100,11 +100,11 @@ async def handle_fast_webhook(payload: dict):
 async def get_job_status(job_id: str) -> dict:
     job = get_job_by_id(job_id)
 
-    if job["status"] == "processing":
-        return {"status": "processing"}
+    if job["rembg_status"] == "processing":
+        return {"rembg_status": "processing"}
 
-    if job["status"] == "finished":
+    if job["rembg_status"] == "finished":
         result_url = job.get("rembg_url")
-        return {"status": "finished", "result_url": result_url}
+        return {"rembg_status": "finished", "result_url": result_url}
 
     raise HTTPException(status_code=500, detail="Unknown job status")

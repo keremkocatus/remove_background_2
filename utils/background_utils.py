@@ -27,7 +27,7 @@ async def start_fast_background_process(prediction: dict, job_id: str, job: dict
         img = await run_in_threadpool(get_image_from_url,prediction["output"])
         result_url = await upload_background_removed_image(img, job_id, job)
         
-        job["status"] = "finished"
+        job["rembg_status"] = "finished"
         job["rembg_url"] = result_url
 
     except Exception as error:
@@ -40,7 +40,7 @@ async def start_enhance_background_process(prediction: dict, job_id: str, job: d
         img = await run_in_threadpool(get_image_from_url,prediction["output"])
         result_url = await upload_enhanced_image(img, job)
         
-        job["status"] = "finished"
+        job["enhance_status"] = "finished"
         job["enhance_url"] = result_url
 
     except Exception as error:

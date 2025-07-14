@@ -47,9 +47,12 @@ async def generate_structured_caption(image_url: str) -> dict | None:
                 "function": {"name": "submit_cloth_caption"},
             },
         )
+        print(response)
 
         assistant_msg = response.choices[0].message
+        print(assistant_msg)
         if assistant_msg.tool_calls:
+            print("asdfasfdasfdasfasf")
             call = assistant_msg.tool_calls[0]
             args = json.loads(call.function.arguments)
 

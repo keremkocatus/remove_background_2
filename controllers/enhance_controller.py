@@ -1,10 +1,13 @@
 import asyncio
 from fastapi import APIRouter, Form, HTTPException, Request
+from controllers.chain_controller import _chain_remove_background
 from services.replicate_services.enhance_service import (
     get_job_status,
-    trigger_prediction,
+    trigger_prediction as trigger_enhance,
     handle_enhance_webhook, 
 )
+
+from services.replicate_services.rembg_service import trigger_prediction as trigger_rembg
 
 enhance_router = APIRouter()
 
@@ -14,7 +17,7 @@ async def enhance_image(
 ):
     try:
         loop = asyncio.get_running_loop()
-        loop.create_task(trigger_prediction(job_id))
+        loop.create_task(trigger_enhance(job_id))
 
         return {"status": "200 OK"}
     except Exception as e:
@@ -42,8 +45,11 @@ async def replicate_enhance_webhook(request: Request):
     """
     try:
         payload = await request.json()
-        await handle_enhance_webhook(payload)
-        return {"status": "Enhance webhook received successfully"}
+        job_id, job = await handle_enhance_webhook(payload)
+
+        asyncio.get_running_loop().create_task(_chain_remove_background(job_id, is_fast=True))
+
+        return {"status": "Enhance webhook received successfully, and remb started"}
     except HTTPException:
         raise
     except Exception as e:
