@@ -1,16 +1,17 @@
 import os
 import replicate
-import json
 import logging
 from fastapi import HTTPException
 from dotenv import load_dotenv
 from services.supabase_services.fail_service import mark_job_failed
 from utils.background_utils import start_enhance_background_process
-from utils.registery import get_job_by_id, get_job_by_prediction_id, update_registry
+from utils.registery import get_job_by_id, get_job_by_prediction_id
 
 load_dotenv()
 replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
+
+LATE_JOB_REGISTRY: dict[str, dict] = {}
 
 ENHANCE_MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
 FAST_MODEL_ID = os.getenv("FAST_MODEL_ID")
