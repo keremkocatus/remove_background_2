@@ -3,6 +3,7 @@ from supabase import AsyncClient
 from dotenv import load_dotenv
 from services.openai_services.openai_service import generate_structured_caption
 import os
+from utils.registery import update_registry, get_job_id_by_job
 
 from services.supabase_services.insert_service import insert_clothes_detail
 
@@ -33,6 +34,9 @@ async def get_caption_for_image(job: dict):
         caption = await generate_structured_caption(job["image_url"])
 
         await insert_clothes_detail(job["wardrobe_id"], job["user_id"], caption)
+
+        job_id = get_job_id_by_job(job)
+        update_registry(job_id, "caption_status", "finished")
 
         # Save/update caption in Supabase
         supabase: AsyncClient = await get_supabase_client()

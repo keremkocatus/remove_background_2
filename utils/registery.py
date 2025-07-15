@@ -33,6 +33,12 @@ def register_job(
 def get_job_by_id(job_id):
     return JOB_REGISTRY.get(job_id)
 
+def get_job_id_by_job(job: dict):
+    for jid, record in JOB_REGISTRY.items():
+        if record is job or record == job:
+            return jid
+    raise ValueError("No job found matching the provided job dict")
+
 def get_job_by_prediction_id(prediction_id: str, is_enhance: bool) -> tuple[str, dict]:
     for job_id, job in JOB_REGISTRY.items():
         if is_enhance:
