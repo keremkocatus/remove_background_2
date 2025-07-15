@@ -1,4 +1,5 @@
 import uuid
+from fastapi import HTTPException
 
 JOB_REGISTRY: dict[str, dict] = {}
 
@@ -53,3 +54,22 @@ def update_registry(job_id: str, key: str, new_value):
     
     job[key] = new_value
 
+def get_job_status(job_id: str, is_enhance: bool):
+    job = JOB_REGISTRY.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} bulunamadı")
+
+    if is_enhance:
+        if job["enhance_status"] == "finished" and job["rembg_status"] == "finished" and job["caption_status"] == "finished":
+            result_url = job["rembg_url"]
+            # DEL KOMUTU
+            return {"job_id": job_id, "status": "finished", "result_url": result_url}
+        else:
+            return {"job_id": job_id, "status": "processing"}
+    else:
+        if job["rembg_status"] == "finished" and job["caption_status"] == "finished":
+            result_url = job["rembg_url"]
+            # DEL KOMUTU
+            return {"job_id": job_id, "status": "finished", "result_url": result_url}
+        else:
+            return {"job_id": job_id, "status": "processing"}

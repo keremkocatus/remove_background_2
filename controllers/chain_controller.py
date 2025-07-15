@@ -3,7 +3,7 @@ from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 
 from services.supabase_services.upload_service import upload_image
 from services.supabase_services.insert_service import insert_job_record
-from utils.registery import register_job
+from utils.registery import get_job_status, register_job
 
 from services.caption_services.caption_service import get_caption_for_image
 from services.replicate_services.rembg_service import (
@@ -66,4 +66,16 @@ async def chain_process(
         raise HTTPException(
             status_code=500,
             detail=f"Error in chain process: {e}"
+        )
+
+@chain_router.get("/chain/job-status/{job_id}/{is_enhance}")
+async def fetch_job_status(job_id: str, is_enhance: bool):
+    try:
+        return get_job_status(job_id, is_enhance)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching job status for {job_id}: {e}"
         )
