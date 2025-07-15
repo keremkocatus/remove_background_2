@@ -47,7 +47,8 @@ async def replicate_enhance_webhook(request: Request):
         payload = await request.json()
         job_id, job = await handle_enhance_webhook(payload)
 
-        asyncio.get_running_loop().create_task(_chain_remove_background(job_id, is_fast=True))
+        loop = asyncio.get_running_loop()
+        loop.create_task(_chain_remove_background(job_id, is_fast=True))
 
         return {"status": "Enhance webhook received successfully, and remb started"}
     except HTTPException:
