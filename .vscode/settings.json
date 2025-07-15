@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./utils/caption_",
+        "./utils/caption_"
+    ]
+}
