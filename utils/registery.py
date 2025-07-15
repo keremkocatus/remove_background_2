@@ -62,14 +62,16 @@ def get_job_status(job_id: str, is_enhance: bool):
     if is_enhance:
         if job["enhance_status"] == "finished" and job["rembg_status"] == "finished" and job["caption_status"] == "finished":
             result_url = job["rembg_url"]
-            # DEL KOMUTU
+            del JOB_REGISTRY[job_id]
+
             return {"job_id": job_id, "status": "finished", "result_url": result_url}
         else:
             return {"job_id": job_id, "status": "processing"}
     else:
         if job["rembg_status"] == "finished" and job["caption_status"] == "finished":
             result_url = job["rembg_url"]
-            # DEL KOMUTU
+            del JOB_REGISTRY[job_id]
+            
             return {"job_id": job_id, "status": "finished", "result_url": result_url}
         else:
             return {"job_id": job_id, "status": "processing"}
