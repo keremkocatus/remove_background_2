@@ -32,7 +32,7 @@ async def get_caption_for_image(job: dict):
         # Generate a caption using OpenAI
         caption = await generate_structured_caption(job["image_url"])
 
-        # await insert_clothes_detail(job["wardrobe_id"], job["user_id"], caption)
+        await insert_clothes_detail(job["wardrobe_id"], job["user_id"], caption)
 
         # Save/update caption in Supabase
         supabase: AsyncClient = await get_supabase_client()
