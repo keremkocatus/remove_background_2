@@ -8,7 +8,7 @@ from utils.registery import get_job_status, register_job
 from services.caption_services.caption_service import get_caption_for_image
 from services.replicate_services.rembg_service import (
     get_job_by_id as get_rembg_job,
-    trigger_prediction as trigger_rembg,
+    trigger_rembg,
 )
 from services.replicate_services.enhance_service import (
     trigger_prediction as trigger_enhance,
