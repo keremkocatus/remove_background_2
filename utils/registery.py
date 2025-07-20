@@ -3,7 +3,6 @@ from fastapi import HTTPException
 
 JOB_REGISTRY: dict[str, dict] = {}
 
-
 # Register a new background-removal job and return its identifier
 def register_job(
     image_url: str,
@@ -29,13 +28,10 @@ def register_job(
         "rembg_url": None,
         "enhance_url": None,
     }
-    print(JOB_REGISTRY)
     return job_id
-
 
 def get_job_by_id(job_id):
     return JOB_REGISTRY.get(job_id)
-
 
 def get_job_id_by_job(job: dict):
     for jid, record in JOB_REGISTRY.items():

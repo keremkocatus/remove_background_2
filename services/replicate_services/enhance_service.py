@@ -1,13 +1,16 @@
 import os
 import replicate
-import asyncio
 import logging
 from fastapi import HTTPException
 from dotenv import load_dotenv
+from replicate.exceptions import ReplicateError
+
 from services.supabase_services.fail_service import mark_job_failed
+
 from utils.background_utils import start_enhance_background_process
 from utils.registery import get_job_by_id, get_job_by_prediction_id, update_registry
-from replicate.exceptions import ReplicateError
+from utils.prompt_utils import get_enhance_prompt
+
 
 load_dotenv()
 replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
@@ -21,14 +24,12 @@ async def trigger_prediction(job_id: str) -> None:
     try:
         job = get_job_by_id(job_id)
         image_url = job["image_url"]
+        category = job["category"]
+        
+        prompt = get_enhance_prompt(category)
 
         prediction_input = {
-            "prompt": (
-                "Please extract the clothing item from the given real-world image and convert it into a clean, flat-lay digital version. "
-                "Ensure the shape, proportions, and color of the garment are preserved accurately in the transformation. "
-                "Remove the background, accessories, and shadows for a clear, studio-style presentation. "
-                "The final output should resemble a catalog image with only the clothing item visible on a plain white or transparent background."
-            ),
+            "prompt": prompt,
             "input_image": image_url,
             "output_format": "jpg"
         }
