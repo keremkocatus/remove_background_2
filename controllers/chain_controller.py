@@ -16,7 +16,7 @@ from services.replicate_services.enhance_service import (
 
 chain_router = APIRouter()
 
-async def _chain_remove_background(job_id: str, is_fast: bool):
+async def _chain_remove_background(job_id: str):
     """
     Zincirleme fonksiyon: önce caption, sonra background removal.
     """
@@ -27,10 +27,9 @@ async def _chain_remove_background(job_id: str, is_fast: bool):
         # 1) Caption
         loop.create_task(get_caption_for_image(job))
         # 2) Background removal
-        loop.create_task(trigger_rembg(job_id, is_fast))
+        loop.create_task(trigger_rembg(job_id))
     except Exception as e:
         print(f"[chain_remove_background] Error: {e}")
-
 
 @chain_router.post("/chain/process")
 async def chain_process(
@@ -39,7 +38,6 @@ async def chain_process(
     category: str = Form(...),
     is_long_top: bool = Form(False),
     is_enhance: bool = Form(False),
-    is_fast: bool = Form(True),
 ):
     """
     1) Supabase'a upload & job kaydı
@@ -59,7 +57,7 @@ async def chain_process(
             loop.create_task(trigger_enhance(job_id))
         else:
             # Direkt arkaplanda rembg
-            loop.create_task(_chain_remove_background(job_id, is_fast))
+            loop.create_task(_chain_remove_background(job_id))
 
         return {"job_id": job_id}
     except Exception as e:

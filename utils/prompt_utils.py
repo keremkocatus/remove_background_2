@@ -1,52 +1,53 @@
-
 def get_enhance_prompt(category: str) -> str:
     if category == "tops":
         return (
             "Extract the top clothing item from the image and convert it into a flat-lay catalog image. "
-            "Do not change or alter the garment in any way—preserve its exact shape, fabric texture, sleeve length, neckline, and print details. "
-            "Remove the background and all parts of the human body, ensuring that only the clothing is shown cleanly and clearly."
+            "Maintain the garment’s exact shape, fabric texture, sleeve length, neckline design, and any printed patterns. "
+            "Do not alter or enhance the clothing in any way. "
+            "Remove the entire background and all parts of the human body, ensuring the top is centered and isolated on a plain white or transparent background."
         )
 
     elif category == "longtops":
         return (
-            "Isolate the long top or dress from the original image and generate a clean flat-lay version suitable for catalogs. "
-            "Keep the garment completely intact without modifying its flow, cut, or decorative elements like buttons or patterns. "
-            "Ensure that the result contains no background or human body parts—only the dress clearly visible."
+            "Isolate the long top or dress from the image and generate a flat-lay catalog version. "
+            "Keep every aspect of the item intact—preserve its silhouette, flow, decorative elements (such as buttons, lace, or patterns), and original colors. "
+            "Do not apply style transfer or enhancements. "
+            "Remove all background elements and human body parts while keeping the dress in the exact same layout and position."
         )
 
     elif category == "bottoms":
         return (
-            "Extract the bottom clothing item such as pants or skirts exactly as seen, and present it as a flat-lay image. "
-            "Retain all details including stitching, fabric texture, pockets, and length without any modifications. "
-            "Remove everything else from the image including background and human body—only the clothing should remain."
+            "Extract the bottom clothing item (such as pants, skirts, or shorts) from the image and present it in a clean, catalog-style flat-lay format. "
+            "Precisely preserve the garment’s length, fabric folds, stitching, pocket placement, and hemline. "
+            "Remove the background and any visible body parts. "
+            "Keep the original composition and position of the item unchanged."
         )
 
     elif category == "one-pieces":
         return (
-            "Extract the one-piece outfit exactly as it appears, showing the full item in a clean, catalog-style layout. "
-            "Do not modify or redesign any part of the outfit—preserve its original material, color, cut, and small details. "
-            "Ensure there are no people, limbs, or background elements in the final output—only the isolated clothing item."
+            "Extract the one-piece outfit exactly as shown in the original image, and generate a clean flat-lay catalog version. "
+            "Do not modify or reinterpret any part of the design—preserve the exact material, color palette, fit, and embellishments. "
+            "Ensure all background elements and human body parts are completely removed, keeping only the isolated garment in the same position."
         )
 
     elif category == "shoes":
         return (
-            "Isolate the pair of shoes from the image and display them exactly as they are in a clean product photo format. "
-            "Do not change the shoe structure, colors, materials, or design elements like soles, stitching, or logos. "
-            "Make sure the background and all human body parts (feet, legs, etc.) are completely removed, showing only the shoes."
+            "Isolate the pair of shoes from the image and display them in a flat-lay or side-view product format, as originally photographed. "
+            "Keep all physical details such as shape, stitching, sole design, textures, logos, and colors exactly the same. "
+            "Remove the entire background and all body parts (feet, legs, etc.), ensuring the shoes are centered and clearly visible without alteration."
         )
 
     elif category == "accessories":
         return (
-            "Extract the accessory item—this may include bags, belts, hats, scarves, glasses, or jewelry—and display it clearly and cleanly. "
-            "Do not make any alterations to the item's size, shape, texture, material, or branding details. "
-            "Remove all background elements and human body parts—only the accessory should remain, centered and isolated."
+            "Extract the accessory item from the image—this includes bags, belts, hats, scarves, glasses, or jewelry—and display it cleanly and clearly in a catalog-ready format. "
+            "Do not alter its dimensions, texture, branding, or color. Maintain the original position and layout. "
+            "Remove all background elements and human body parts, including hands or shoulders if present."
         )
 
     else:
         return (
-            "Extract the fashion item from the image and show it exactly as it is, in a clean catalog-ready flat-lay format. "
-            "Preserve all original visual features like shape, texture, material, and design without modification. "
-            "Ensure the image contains no background or human body parts—only the clothing or item clearly presented."
+            "Extract the fashion item from the image and convert it into a clean, catalog-style flat-lay. "
+            "Preserve all original visual characteristics including size, color, texture, and design details. "
+            "Do not apply style changes or transformations. "
+            "Remove all human features and background content, keeping the item in the same position and orientation as in the source image."
         )
-
-

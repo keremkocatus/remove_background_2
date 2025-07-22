@@ -22,7 +22,7 @@ FAST_MODEL_ID = os.getenv("FAST_MODEL_ID")
 REMBG_WEBHOOK_URL = os.getenv("REPLICATE_WEBHOOK_URL")
 
 # Submit an asynchronous prediction request to Replicate
-async def trigger_rembg(job_id: str, is_fast: bool):
+async def trigger_rembg(job_id: str):
     job = get_job_by_id(job_id)
 
     if job["enhance_url"] is not None:
@@ -30,16 +30,16 @@ async def trigger_rembg(job_id: str, is_fast: bool):
     else:
         image_url = job["image_url"]
 
-    if is_fast:
-        prediction_input = {
-            "image": image_url,
-            "format": "png",
-            "reverse": False,
-            "threshold": -20,
-            "background_type": "rgba",
-        }
-        model_id = FAST_MODEL_ID
-        webhook_url = f"{REMBG_WEBHOOK_URL}/rembg/webhook/replicate/fast"
+    prediction_input = {
+        "image": image_url,
+        "format": "png",
+        "reverse": False,
+        "threshold": -20,
+        "background_type": "rgba",
+    }
+    
+    model_id = FAST_MODEL_ID
+    webhook_url = f"{REMBG_WEBHOOK_URL}/rembg/webhook/replicate/fast"
 
     prediction = await replicate_client.predictions.async_create(
         version=model_id,

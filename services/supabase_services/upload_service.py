@@ -6,16 +6,13 @@ from utils.url_utils import clean_url
 
 BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 
-
 def build_storage_path(user_id: str, bucket_id: str, filename: str) -> str:
     return f"{user_id}/{bucket_id}/{filename}"
-
 
 def extract_public_url(response: dict | str) -> str:
     if isinstance(response, str):
         return clean_url(response)
     return clean_url(response.get("publicURL") or response.get("public_url"))
-
 
 async def upload_image(user_id: str, image_file: UploadFile, category: str) -> tuple[str, str] | None:
     try:
@@ -37,7 +34,6 @@ async def upload_image(user_id: str, image_file: UploadFile, category: str) -> t
     except Exception as error:
         print(f"Error in upload_image: {error}")
         return None
-
 
 async def upload_background_removed_image(processed_image: bytes, job_id: str, job: dict[str, str]) -> str | None:
     try:
@@ -62,7 +58,6 @@ async def upload_background_removed_image(processed_image: bytes, job_id: str, j
     except Exception as error:
         print(f"Error in upload_background_removed_image: {error}")
         return None
-
 
 async def upload_enhanced_image(processed_image: bytes, job: dict[str, str]) -> str | None:
     try:

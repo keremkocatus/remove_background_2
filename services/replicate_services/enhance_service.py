@@ -11,7 +11,6 @@ from utils.background_utils import start_enhance_background_process
 from utils.registery import get_job_by_id, get_job_by_prediction_id, update_registry
 from utils.prompt_utils import get_enhance_prompt
 
-
 load_dotenv()
 replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
