@@ -1,7 +1,7 @@
 from starlette.concurrency import run_in_threadpool
 
 from services.caption_services.caption_service import get_caption_for_image
-from utils.image_utils import process_mask, get_image_from_url
+from utils.image_utils import get_image_from_url
 from services.supabase_services.upload_service import upload_background_removed_image, upload_enhanced_image
 from services.supabase_services.fail_service import mark_job_failed
 

@@ -6,7 +6,7 @@ import asyncio
 
 webhook_router = APIRouter()
 
-@webhook_router.post("/webhook/replicate/fast")
+@webhook_router.post("/webhook/replicate/fast-rembg")
 async def replicate_fast_webhook(request: Request):
     try:
         payload = await request.json()
