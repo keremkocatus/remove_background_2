@@ -39,7 +39,7 @@ async def trigger_rembg(job_id: str):
     }
     
     model_id = FAST_MODEL_ID
-    webhook_url = f"{REMBG_WEBHOOK_URL}/rembg/webhook/replicate/fast"
+    webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/fast-rembg"
 
     prediction = await replicate_client.predictions.async_create(
         version=model_id,

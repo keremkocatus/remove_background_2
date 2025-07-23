@@ -3,14 +3,15 @@ import os
 
 BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 
-async def fetch_job_record(user_id: str, image_url: str, is_rembg: bool = False) -> dict:
+async def fetch_job_record(user_id: str, image_url: str) -> dict:
     try:
         supabase = await get_supabase_client()
 
         response = await supabase.from_(BUCKET_NAME).select("*") \
             .eq("user_id", user_id) \
             .eq("image_url", image_url) \
-            .single()
+            .single() \
+            .execute()
 
         return response.data
 

@@ -43,7 +43,7 @@ async def upload_background_removed_image(processed_image: bytes, job_id: str, j
         await supabase.storage.from_(BUCKET_NAME).upload(
             file=processed_image,
             path=storage_path,
-            file_options={"cache-control": "3600", "upsert": "false"},
+            file_options={"cache-control": "3600", "upsert": "true"},
         )
 
         public_url_response = await supabase.storage.from_(BUCKET_NAME).get_public_url(storage_path)
@@ -67,7 +67,7 @@ async def upload_enhanced_image(processed_image: bytes, job: dict[str, str]) -> 
         await supabase.storage.from_(BUCKET_NAME).upload(
             file=processed_image,
             path=storage_path,
-            file_options={"cache-control": "3600", "upsert": "false"},
+            file_options={"cache-control": "3600", "upsert": "true"},
         )
 
         public_url_response = await supabase.storage.from_(BUCKET_NAME).get_public_url(storage_path)

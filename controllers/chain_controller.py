@@ -1,37 +1,20 @@
 import asyncio
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 
+from services.chain_services.chain_service import chain_remove_background
 from services.supabase_services.upload_service import upload_image
 from services.supabase_services.insert_service import insert_job_record
-from utils.registery import get_job_status, register_job
+from services.replicate_services.enhance_service import trigger_prediction as trigger_enhance
 
-from services.caption_services.caption_service import get_caption_for_image
-from services.replicate_services.rembg_service import (
-    get_job_by_id as get_rembg_job,
-    trigger_rembg,
-)
-from services.replicate_services.enhance_service import (
-    trigger_prediction as trigger_enhance,
-)
+from utils.registery import get_job_status, register_job
+from route_loader import load_routes
+
+
+routes = load_routes()
 
 chain_router = APIRouter()
 
-async def _chain_remove_background(job_id: str):
-    """
-    Zincirleme fonksiyon: önce caption, sonra background removal.
-    """
-    try:
-        job = get_rembg_job(job_id)
-        loop = asyncio.get_running_loop()
-
-        # 1) Caption
-        loop.create_task(get_caption_for_image(job))
-        # 2) Background removal
-        loop.create_task(trigger_rembg(job_id))
-    except Exception as e:
-        print(f"[chain_remove_background] Error: {e}")
-
-@chain_router.post("/chain/process")
+@chain_router.post(routes.chain.process)
 async def chain_process(
     user_id: str = Form(...),
     clothe_image: UploadFile = File(...),
@@ -57,7 +40,7 @@ async def chain_process(
             loop.create_task(trigger_enhance(job_id))
         else:
             # Direkt arkaplanda rembg
-            loop.create_task(_chain_remove_background(job_id))
+            loop.create_task(chain_remove_background(job_id))
 
         return {"job_id": job_id}
     except Exception as e:
@@ -66,7 +49,7 @@ async def chain_process(
             detail=f"Error in chain process: {e}"
         )
 
-@chain_router.get("/chain/job-status/{job_id}/{is_enhance}")
+@chain_router.get(routes.chain.job_status)
 async def fetch_job_status(job_id: str, is_enhance: bool):
     try:
         return get_job_status(job_id, is_enhance)

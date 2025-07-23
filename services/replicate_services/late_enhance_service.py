@@ -4,6 +4,7 @@ import logging
 from fastapi import HTTPException
 from dotenv import load_dotenv
 from services.supabase_services.fail_service import mark_job_failed
+from services.supabase_services.fetch_service import fetch_job_record
 from utils.background_utils import start_enhance_background_process
 from utils.prompt_utils import get_enhance_prompt
 from utils.registery import get_job_by_id, get_job_by_prediction_id
@@ -16,12 +17,11 @@ LATE_JOB_REGISTRY: dict[str, dict] = {}
 
 ENHANCE_MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
 FAST_MODEL_ID = os.getenv("FAST_MODEL_ID")
-ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/enhance/webhook/replicate-enhance"
+ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/webhook/replicate-enhance"
 
 # Submit an asynchronous enhancement prediction request to Replicate
 async def trigger_prediction(image_url: str) -> None:
     try:
-        
         prompt = get_enhance_prompt(category)
 
         prediction_input = {

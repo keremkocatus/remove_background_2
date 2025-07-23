@@ -29,6 +29,26 @@ async def insert_job_record(job_id: str) -> dict:
         print(f"Error in insert_job_record: {error}")
         return None
 
+
+async def update_job_record(job_id: str) -> dict:
+    try:
+        supabase = await get_supabase_client()
+        job = get_job_by_id(job_id)
+
+        # clothe detail kontrol
+
+        response = await supabase.from_(BUCKET_NAME).update({
+            "job_id": job_id,
+            "enhance_status": job["enhance_status"],
+            "rembg_status": job["rembg_status"],
+            "caption_status": job["caption_status"],
+        }).eq("image_url", job["image_url"]).execute()
+
+        return {"status": "Job successfully updated into database"}
+    except Exception as error:
+        print(f"Error in update_job_record: {error}")
+        return None
+
 async def insert_clothes_detail(
     wardrobe_item_id: str, user_id: str, caption_data: dict
 ) -> dict:

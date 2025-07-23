@@ -16,7 +16,7 @@ replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
 
 MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
-ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/enhance/webhook/replicate-enhance"
+ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/webhook/replicate-enhance"
 
 # Submit an asynchronous enhancement prediction request to Replicate
 async def trigger_prediction(job_id: str) -> None:

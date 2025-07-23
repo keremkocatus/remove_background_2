@@ -1,5 +1,6 @@
 import uuid
 from fastapi import HTTPException
+from utils.url_utils import extract_bucket_id
 
 JOB_REGISTRY: dict[str, dict] = {}
 
@@ -95,3 +96,24 @@ def get_job_status(job_id: str, is_enhance: bool):
             return {"job_id": job_id, "status": "finished", "result_url": result_url}
         else:
             return {"job_id": job_id, "status": "processing"}
+
+def insert_late_enhance_record(record: dict):
+    job_id = str(uuid.uuid4())
+    bucket_id = extract_bucket_id(record["image_url"])
+
+    JOB_REGISTRY[job_id] = {
+        "enhance_status": "processing",
+        "rembg_status": "processing",
+        "caption_status": record["caption_status"],
+        "enhance_prediction_id": None,
+        "rembg_prediction_id": None,
+        "wardrobe_id": record["id"],
+        "user_id": record["user_id"],
+        "bucket_id": bucket_id,
+        "image_url": record["image_url"],
+        "category": record["category"],
+        "is_long_top": record["is_long_top"],
+        "rembg_url": None,
+        "enhance_url": None,
+    }
+    return job_id
