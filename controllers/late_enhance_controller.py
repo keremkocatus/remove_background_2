@@ -39,7 +39,7 @@ async def late_enhance_image(
         elif is_enhance and  is_caption:
             loop.create_task(trigger_late_enhance(job_id))
         else:
-            # Direkt arkaplanda rembg
+            # arkaplanda rembg
             loop.create_task(chain_remove_background(job_id))
         
         return {"status": job_id}

@@ -24,7 +24,7 @@ async def check_clothe_detail(wardrobe_id: str):
         supabase = await get_supabase_client()
         
         resp = await supabase.from_(CLOTHE_DETAIL_TABLE).select("*")\
-            .eq("wardrobe_id", wardrobe_id).execute()
+            .eq("wardrobe_item_id", wardrobe_id).execute()
         
         if not resp.count == 0:
             return True
