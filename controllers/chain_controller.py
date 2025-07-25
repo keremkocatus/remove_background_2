@@ -7,14 +7,11 @@ from services.supabase_services.insert_service import insert_job_record
 from services.replicate_services.enhance_service import trigger_prediction as trigger_enhance
 
 from utils.registery import get_job_status, register_job
-from route_loader import load_routes
-
-
-routes = load_routes()
+import routes
 
 chain_router = APIRouter()
 
-@chain_router.post(routes.chain.process)
+@chain_router.post(routes.CHAIN_PROCESS)
 async def chain_process(
     user_id: str = Form(...),
     clothe_image: UploadFile = File(...),
@@ -49,7 +46,7 @@ async def chain_process(
             detail=f"Error in chain process: {e}"
         )
 
-@chain_router.get(routes.chain.job_status)
+@chain_router.get(routes.CHAIN_JOB_STATUS)
 async def fetch_job_status(job_id: str, is_enhance: bool):
     try:
         return get_job_status(job_id, is_enhance)

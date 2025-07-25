@@ -67,15 +67,4 @@ async def handle_enhance_webhook(payload: dict) -> None:
             await mark_job_failed(job_id)
         raise HTTPException(status_code=500, detail=f"Webhook processing failed: {e}")
 
-# Retrieve current status of a registered job
-async def get_job_status(job_id: str) -> dict:
-    job = get_job_by_id(job_id)
 
-    if job["enhance_status"] == "processing":
-        return {"enhance_status": "processing"}
-
-    if job["enhance_status"] == "finished":
-        result_url = job.get("enhance_url")
-        return {"enhance_status": "finished", "result_url": result_url}
-
-    raise HTTPException(status_code=500, detail="Unknown job status")

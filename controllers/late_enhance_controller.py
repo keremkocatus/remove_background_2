@@ -1,33 +1,43 @@
 import asyncio
-from fastapi import APIRouter, Form, HTTPException, Request
+from fastapi import APIRouter, Form, HTTPException
 from controllers.chain_controller import chain_remove_background
-from services.replicate_services.enhance_service import (
-    trigger_prediction as trigger_enhance)
-
-from route_loader import load_routes
-from services.supabase_services.fetch_service import fetch_job_record
+from services.caption_services.caption_service import get_caption_for_image
+from services.replicate_services.late_enhance_service import trigger_late_enhance
+from services.supabase_services.fetch_service import check_clothe_detail, fetch_job_record
 from services.supabase_services.insert_service import update_job_record
-from utils.registery import insert_late_enhance_record
+from utils.registery import get_job_by_id, insert_late_enhance_record
+import routes
 
-routes = load_routes()
 
 late_enhance_router = APIRouter()
 
-@late_enhance_router.post(routes.late_enhance)
+@late_enhance_router.post(routes.LATE_ENHANCE)
 async def late_enhance_image(
     user_id: str = Form(...), 
     image_url: str = Form(...),
     is_enhance: bool = Form(True),
-    #wardrobe_id: str = Form(...)
+    wardrobe_id: str = Form(...)
 ):
+    """
+    late enhance, if there is clothe detail caption service will not work
+    late enhance, if there is clothe detail caption service will work
+    late, enhance, will fetch record wardrobe table and it will update
+    """
     try:
         record = await fetch_job_record(user_id, image_url)
         job_id = insert_late_enhance_record(record)
         await update_job_record(job_id)
         
+        is_caption = await check_clothe_detail(wardrobe_id)
+        
         loop = asyncio.get_running_loop()
-        if is_enhance:
-            loop.create_task(trigger_enhance(job_id))
+        if is_enhance and is_caption:
+            job = get_job_by_id(job_id)
+            
+            loop.create_task(get_caption_for_image(job))
+            loop.create_task(trigger_late_enhance(job_id))
+        elif is_enhance and  is_caption:
+            loop.create_task(trigger_late_enhance(job_id))
         else:
             # Direkt arkaplanda rembg
             loop.create_task(chain_remove_background(job_id))
