@@ -5,7 +5,7 @@ from services.caption_services.caption_service import get_caption_for_image
 from services.replicate_services.late_enhance_service import trigger_late_enhance
 from services.supabase_services.fetch_service import check_clothe_detail, fetch_job_record
 from services.supabase_services.insert_service import update_job_record
-from utils.registery import get_job_by_id, insert_late_enhance_record
+from utils.registery import get_job_by_id, get_job_status, insert_late_enhance_record
 import routes
 
 
@@ -47,4 +47,17 @@ async def late_enhance_image(
         raise HTTPException(
             status_code=500,
             detail=f"Error in enhance image: {e}"
+        )
+
+# send always true for is_enhance
+@late_enhance_router.get(routes.CHAIN_JOB_STATUS)
+async def fetch_job_status(job_id: str, is_enhance: bool):
+    try:
+        return get_job_status(job_id, is_enhance)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching job status for {job_id}: {e}"
         )

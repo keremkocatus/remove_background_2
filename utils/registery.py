@@ -77,7 +77,7 @@ def get_job_status(job_id: str, is_enhance: bool):
         ):
             result_url = job["rembg_url"]
             wardrobe_id = job["wardrobe_id"]
-            print(wardrobe_id)
+        
             del JOB_REGISTRY[job_id]
 
             return {
