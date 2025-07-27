@@ -1,7 +1,7 @@
 import asyncio
 from services.caption_services.caption_service import get_caption_for_image
 from services.replicate_services.rembg_service import trigger_rembg
-from utils.registery import get_job_by_id
+from utils.wardrobe_registery import get_job_by_id
 
 async def chain_remove_background(job_id: str):
     """

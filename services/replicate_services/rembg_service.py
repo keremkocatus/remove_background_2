@@ -8,7 +8,7 @@ from services.supabase_services.fail_service import mark_job_failed
 
 from utils.background_utils import start_fast_background_process
 
-from utils.registery import (
+from utils.wardrobe_registery import (
     get_job_by_id,
     get_job_by_prediction_id,
     update_registry,

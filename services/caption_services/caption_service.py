@@ -3,7 +3,7 @@ from supabase import AsyncClient
 from dotenv import load_dotenv
 from services.openai_services.openai_service import generate_structured_caption
 import os
-from utils.registery import update_registry, get_job_id_by_job
+from utils.wardrobe_registery import update_registry, get_job_id_by_job
 
 from services.supabase_services.insert_service import insert_clothes_detail
 

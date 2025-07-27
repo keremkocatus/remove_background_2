@@ -1,18 +1,21 @@
 from services.supabase_services.client_service import get_supabase_client
 from utils.caption_tools.hex_utils import convert_colors_to_hex_format
+from utils.edit_registery import get_edit_job_by_id
 from utils.extract_utils import extract_id
-from utils.registery import get_job_by_id, update_registry
+from utils.wardrobe_registery import get_job_by_id, update_registry
 import os
 
-BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
+WARDROBE_BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 CLOTHES_DETAIL_TABLE = os.getenv("CLOTHES_DETAIL_TABLE")
+EDIT_BUCKET_NAME = os.getenv("EDIT_BUCKET_NAME")
+EDIT_TABLE_NAME = os.getenv("EDIT_TABLE_NAME")
 
 async def insert_job_record(job_id: str) -> dict:
     try:
         supabase = await get_supabase_client()
         job = get_job_by_id(job_id)
 
-        response = await supabase.from_(BUCKET_NAME).insert({
+        response = await supabase.from_(WARDROBE_BUCKET_NAME).insert({
             "image_url": job["image_url"],
             "user_id": job["user_id"],
             "category": job["category"],
@@ -37,7 +40,7 @@ async def update_job_record(job_id: str) -> dict:
 
         # clothe detail kontrol
 
-        response = await supabase.from_(BUCKET_NAME).update({
+        response = await supabase.from_(WARDROBE_BUCKET_NAME).update({
             "job_id": job_id,
             "enhance_status": job["enhance_status"],
             "rembg_status": job["rembg_status"],
@@ -90,4 +93,22 @@ async def insert_clothes_detail(
         return {"status": "Clothes detail successfully inserted"}
     except Exception as error:
         print(f"Error in insert_clothes_detail: {error}")
+        return None
+    
+async def insert_edit_job_record(job_id: str) -> dict:
+    try:
+        supabase = await get_supabase_client()
+        job = get_edit_job_by_id(job_id)
+
+        response = await supabase.from_(EDIT_TABLE_NAME).insert({
+            "image_url": job["image_url"],
+            "user_id": job["user_id"],
+            "job_id": job_id,
+            "status": job["status"],
+            "prompt": job["prompt"],
+        }).execute()
+
+        return {"status": "Job successfully inserted into database"}
+    except Exception as error:
+        print(f"Error in insert_edit_job_record: {error}")
         return None

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from replicate.exceptions import ReplicateError
 from services.supabase_services.fail_service import mark_job_failed
 from utils.background_utils import start_enhance_background_process
-from utils.registery import get_job_by_id, get_job_by_prediction_id, update_registry
+from utils.wardrobe_registery import get_job_by_id, get_job_by_prediction_id, update_registry
 from utils.prompt_utils import get_enhance_prompt
 import asyncio
 from services.replicate_services.rembg_service import trigger_rembg

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from controllers.chain_controller import chain_remove_background
+from image_edit_services.replicate_services.image_edit_service import handle_edit_webhook
 from services.replicate_services.enhance_service import handle_enhance_webhook
 from services.replicate_services.late_enhance_service import handle_late_enhance_webhook, late_chain_remove_background
 from services.replicate_services.rembg_service import handle_fast_webhook
@@ -84,3 +85,25 @@ async def replicate_enhance_webhook(request: Request):
             status_code=500,
             detail=f"Error processing enhance webhook: {e}"
         )
+        
+@webhook_router.post(routes.WEBHOOK_IMAGE_EDIT)
+async def replicate_edit_webhook(request: Request):
+    """
+    Webhook endpoint for replicate edit predictions (e.g. once 'succeeded').
+    """
+    try:
+        payload = await request.json()
+        status = payload.get("status")
+
+        if status == "succeeded":
+            job_id, job = await handle_edit_webhook(payload)
+
+            return {"status": "Edit webhook received successfully"}
+        else:
+            await mark_job_failed(job_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing edit webhook: {e}")

@@ -5,7 +5,7 @@ from services.caption_services.caption_service import get_caption_for_image
 from services.replicate_services.late_enhance_service import trigger_late_enhance
 from services.supabase_services.fetch_service import check_clothe_detail, fetch_job_record
 from services.supabase_services.insert_service import update_job_record
-from utils.registery import get_job_by_id, get_job_status, insert_late_enhance_record
+from utils.wardrobe_registery import get_job_by_id, get_job_status, insert_late_enhance_record
 import routes
 
 
