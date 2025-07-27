@@ -54,12 +54,17 @@ async def trigger_prediction(job_id: str) -> None:
 async def handle_enhance_webhook(payload: dict) -> None:
     job_id = None
     try:
-        prediction_id = payload.get("id")
-        job_id, job = get_job_by_prediction_id(prediction_id, is_enhance=True)
+        status = payload.get("status")
 
-        await start_enhance_background_process(payload, job_id, job)
+        if status == "succeeded":
+            prediction_id = payload.get("id")
+            job_id, job = get_job_by_prediction_id(prediction_id, is_enhance=True)
 
-        return job_id, job
+            await start_enhance_background_process(payload, job_id, job)
+
+            return job_id, job
+        else: 
+            await mark_job_failed(job_id)
     except Exception as e:
         if job_id:
             await mark_job_failed(job_id)

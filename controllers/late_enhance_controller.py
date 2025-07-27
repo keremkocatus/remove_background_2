@@ -36,13 +36,13 @@ async def late_enhance_image(
             
             loop.create_task(get_caption_for_image(job))
             loop.create_task(trigger_late_enhance(job_id))
-        elif is_enhance and  is_caption:
+        elif is_enhance and is_caption:
             loop.create_task(trigger_late_enhance(job_id))
         else:
             # arkaplanda rembg
             loop.create_task(chain_remove_background(job_id))
         
-        return {"status": job_id}
+        return {"job_id": job_id}
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -50,7 +50,7 @@ async def late_enhance_image(
         )
 
 # send always true for is_enhance
-@late_enhance_router.get(routes.CHAIN_JOB_STATUS)
+@late_enhance_router.get(routes.LATE_ENHANCE_JOB_STATUS)
 async def fetch_job_status(job_id: str, is_enhance: bool):
     try:
         return get_job_status(job_id, is_enhance)

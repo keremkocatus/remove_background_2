@@ -59,6 +59,8 @@ async def handle_fast_webhook(payload: dict):
 
         loop = asyncio.get_running_loop()
         loop.create_task(start_fast_background_process(payload, job_id, job))
+
+        return job_id
     except Exception as e:
         if job_id:
             await mark_job_failed(job_id)

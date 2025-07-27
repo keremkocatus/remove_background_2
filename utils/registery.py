@@ -1,5 +1,6 @@
 import uuid
 from fastapi import HTTPException
+from services.supabase_services.fail_service import upload_error_log
 from utils.url_utils import extract_bucket_id
 
 JOB_REGISTRY: dict[str, dict] = {}
@@ -64,20 +65,40 @@ def update_registry(job_id: str, key: str, new_value):
     job[key] = new_value
 
 
-def get_job_status(job_id: str, is_enhance: bool):
+async def get_job_status(job_id: str, is_enhance: bool):
     job = JOB_REGISTRY.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job {job_id} bulunamadı")
 
+    rembg_status = job.get("rembg_status")
+    enhance_status = job.get("enhance_status")
+    caption_status = job.get("caption_status")
+
+    failed_tasks = []
+    if rembg_status == "failed":
+        failed_tasks.append("rembg")
+    if enhance_status == "failed":
+        failed_tasks.append("enhance")
+    if caption_status == "failed":
+        failed_tasks.append("caption")
+
+    """
+    if len(failed_tasks) == 3:
+        del JOB_REGISTRY[job_id]
+        return {
+            "job_id": job_id,
+            "status": "failed",
+        } 
+    """
+
     if is_enhance:
         if (
-            job["enhance_status"] == "finished"
-            and job["rembg_status"] == "finished"
-            and job["caption_status"] == "finished"
+            enhance_status == "finished"
+            and rembg_status == "finished"
+            and caption_status == "finished"
         ):
             result_url = job["rembg_url"]
             wardrobe_id = job["wardrobe_id"]
-        
             del JOB_REGISTRY[job_id]
 
             return {
@@ -86,16 +107,33 @@ def get_job_status(job_id: str, is_enhance: bool):
                 "result_url": result_url,
                 "wardrobe_id": wardrobe_id,
             }
+        elif len(failed_tasks) != 0:
+            await upload_error_log(job_id, failed_tasks)
+            del JOB_REGISTRY[job_id]
+
+            return {
+                "job_id": job_id,
+                "status": "failed",
+                "failed_tasks": failed_tasks
+            }
         else:
             return {"job_id": job_id, "status": "processing"}
+
     else:
-        if job["rembg_status"] == "finished" and job["caption_status"] == "finished":
+        if rembg_status == "finished" and caption_status == "finished":
             result_url = job["rembg_url"]
             del JOB_REGISTRY[job_id]
 
             return {"job_id": job_id, "status": "finished", "result_url": result_url}
+        elif failed_tasks:
+            return {
+                "job_id": job_id,
+                "status": "partial_failed",
+                "failed_tasks": failed_tasks
+            }
         else:
             return {"job_id": job_id, "status": "processing"}
+
 
 def insert_late_enhance_record(record: dict):
     job_id = str(uuid.uuid4())

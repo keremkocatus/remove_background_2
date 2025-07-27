@@ -5,6 +5,7 @@ from services.replicate_services.late_enhance_service import handle_late_enhance
 from services.replicate_services.rembg_service import handle_fast_webhook
 import asyncio
 import routes
+from services.supabase_services.fail_service import mark_job_failed
 
 
 webhook_router = APIRouter()
@@ -13,9 +14,14 @@ webhook_router = APIRouter()
 async def replicate_fast_webhook(request: Request):
     try:
         payload = await request.json()
-        await handle_fast_webhook(payload)
-        
-        return {"status": "Webhook received successfully"}
+        status = payload.get("status")
+
+        if status == "succeeded":
+            job_id = await handle_fast_webhook(payload)
+            
+            return {"status": "Webhook rembg received successfully"}
+        else:
+            await mark_job_failed(job_id)
     except HTTPException:
         raise
     except Exception as e:
@@ -32,12 +38,19 @@ async def replicate_enhance_webhook(request: Request):
     """
     try:
         payload = await request.json()
-        job_id, job = await handle_enhance_webhook(payload)
+        status = payload.get("status")
 
-        loop = asyncio.get_running_loop()
-        loop.create_task(chain_remove_background(job_id))
+        if status == "succeeded":
+            job_id, job = await handle_enhance_webhook(payload)
 
-        return {"status": "Enhance webhook received successfully, and remb started"}
+            loop = asyncio.get_running_loop()
+            loop.create_task(chain_remove_background(job_id))
+
+            return {"status": "Enhance webhook received successfully, and rembg started"}
+        else:
+            await mark_job_failed(job_id)
+
+            return {"status": "failed"}
     except HTTPException:
         raise
     except Exception as e:
@@ -53,12 +66,17 @@ async def replicate_enhance_webhook(request: Request):
     """
     try:
         payload = await request.json()
-        job_id, job = await handle_late_enhance_webhook(payload)
+        status = payload.get("status")
 
-        loop = asyncio.get_running_loop()
-        loop.create_task(late_chain_remove_background(job_id))
+        if status == "succeeded":
+            job_id, job = await handle_late_enhance_webhook(payload)
 
-        return {"status": "Enhance webhook received successfully, and remb started"}
+            loop = asyncio.get_running_loop()
+            loop.create_task(late_chain_remove_background(job_id))
+
+            return {"status": "Enhance webhook received successfully, and rembg started"}
+        else:
+            await mark_job_failed(job_id)
     except HTTPException:
         raise
     except Exception as e:
