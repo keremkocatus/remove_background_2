@@ -1,6 +1,6 @@
 from services.supabase_services.client_service import get_supabase_client
 from utils.edit_registery import update_edit_registry
-from utils.wardrobe_registery import get_job_by_id, update_registry
+from utils.wardrobe_registery import update_registry
 import os
 from dotenv import load_dotenv
 
@@ -23,17 +23,6 @@ async def mark_job_failed(job_id: str, bucket_name: str = bucket_name) -> None:
         "job_id", job_id
     ).execute()
 
-async def upload_error_log(job_id: str, failed_tasks: list = []):
-    supabase = await get_supabase_client()
-    job = get_job_by_id(job_id)
-
-    await supabase.from_(error_log_table).insert({
-        "user_id": job["user_id"],
-        "job_id": job_id,
-        "image_url": job["image_url"],
-        "failed_tasks": failed_tasks,
-    }).execute()
-    
 
 async def mark_edit_job_failed(job_id: str, bucket_name: str = EDIT_TABLE_NAME) -> None:
     supabase = await get_supabase_client()

@@ -1,7 +1,7 @@
 import uuid
 from fastapi import HTTPException
-from services.supabase_services.fail_service import upload_error_log
-from utils.url_utils import extract_bucket_id
+from utils.error_logger import upload_error_log
+
 
 EDIT_REGISTRY: dict[str, dict] = {}
 
@@ -55,7 +55,7 @@ def update_edit_registry(job_id: str, key: str, new_value):
     job[key] = new_value
 
 
-async def get_edit_job_status(job_id: str, is_enhance: bool):
+async def get_edit_job_status(job_id: str):
     job = EDIT_REGISTRY.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job {job_id} bulunamadı")
@@ -72,7 +72,8 @@ async def get_edit_job_status(job_id: str, is_enhance: bool):
             "edited_image_url": result_url,
         }
     elif status == "failed":
-        await upload_error_log(job_id)
+        job = get_edit_job_by_id(job_id)
+        await upload_error_log(job["user_id"], job["image_url"], job_id, failed_tasks=[])
         del EDIT_REGISTRY[job_id]
 
         return {

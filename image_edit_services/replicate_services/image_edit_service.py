@@ -4,6 +4,7 @@ import logging
 from fastapi import HTTPException
 from dotenv import load_dotenv
 from replicate.exceptions import ReplicateError
+import routes
 from services.supabase_services.fail_service import mark_edit_job_failed
 from utils.background_utils import start_edit_background_process
 from utils.edit_registery import get_edit_job_by_id, get_edit_job_by_prediction_id, update_edit_registry
@@ -13,7 +14,7 @@ replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
 replicate_client = replicate.Client(api_token=replicate_api_token)
 
 MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
-EDIT_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/webhook/edit-image"
+EDIT_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}{routes.WEBHOOK_IMAGE_EDIT}"
 
 # Submit an asynchronous enhancement prediction request to Replicate
 async def trigger_edit_prediction(job_id: str) -> None:
