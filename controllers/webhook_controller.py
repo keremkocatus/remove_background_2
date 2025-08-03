@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 from controllers.chain_controller import chain_remove_background
-from image_edit_services.replicate_services.image_edit_service import handle_edit_webhook
+from services.replicate_services.image_edit_service import handle_edit_webhook
 from services.replicate_services.enhance_service import handle_enhance_webhook
 from services.replicate_services.late_enhance_service import handle_late_enhance_webhook, late_chain_remove_background
 from services.replicate_services.rembg_service import handle_fast_webhook
