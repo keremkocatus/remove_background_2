@@ -31,7 +31,7 @@ async def process_outfit_review_for_job(job_id: str) -> dict | str:
         job = get_review_job_by_id(job_id)
 
         # 1. Generate outfit review using OpenAI
-        review_data = await generate_outfit_review(job["image_url"], job["roast_level"], job["job_id"])
+        review_data = await generate_outfit_review(job["image_url"], job["roast_level"], job_id)
 
         # 2. Save review details in table
         await insert_review_job_record(
@@ -41,7 +41,7 @@ async def process_outfit_review_for_job(job_id: str) -> dict | str:
 
         # 3. Update registry
         update_review_registry(job_id, "result", review_data)
-        update_review_registry(job_id, "review_status", "finished")
+        update_review_registry(job_id, "status", "finished")
 
     except Exception as e:
         print(f"[Outfit Review Service] Error: {e}")

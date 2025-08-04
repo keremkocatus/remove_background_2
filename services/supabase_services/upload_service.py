@@ -151,4 +151,4 @@ async def upload_image_review(user_id: str, image: UploadFile):
         return public_url, bucket_id
     except Exception as error:
         print(f"Error in upload_image: {error}")
-        return None
+        return None, None

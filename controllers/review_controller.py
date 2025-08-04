@@ -11,12 +11,12 @@ review_router = APIRouter()
 async def review_outfit_process(
     user_id: str = Form(...),
     image: UploadFile = File(...),
-    roast_level: int = Form(...)
+    roast_level: str = Form(...)
 ):
     try:
         # --- Upload & job kaydı ---
         public_url, bucket_id = await upload_image_review(user_id, image)
-        job_id = register_review_job(public_url, user_id, roast_level, bucket_id)
+        job_id = register_review_job(public_url, user_id, int(roast_level), bucket_id)
         
         loop = asyncio.get_running_loop()
         loop.create_task(process_outfit_review_for_job(job_id))

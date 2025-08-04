@@ -42,10 +42,10 @@ def get_outfit_review_prompt(image_url: str, roast_level: int) -> list:
                         f"{tone_instruction}\n\n"
                         "Look at the outfit in the image and return a JSON object containing:\n"
                         "- 'review': a short paragraph giving overall impression of the outfit\n"
-                        "- 'style_rating': score out of 5\n"
-                        "- 'color_match_rating': score out of 5\n"
-                        "- 'piece_match_rating': score out of 5\n"
-                        "- 'overall_rating': score out of 5 (not average — your own holistic judgment)\n\n"
+                        "- 'style_rating': decimal score (float) out of 5 (e.g., 4.3)\n"
+                        "- 'color_match_rating': decimal score (float) out of 5 (e.g., 3.8)\n"
+                        "- 'piece_match_rating': decimal score (float) out of 5 (e.g., 4.0)\n"
+                        "- 'overall_rating': decimal score (float) out of 5 (e.g., 4.2 — not average, but holistic)\n\n"
                         "Output ONLY via tool call with the exact structure."
                     )
                 },
