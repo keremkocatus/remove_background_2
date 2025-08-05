@@ -1,7 +1,7 @@
 import asyncio
 from fastapi import APIRouter, Form, HTTPException
 from controllers.chain_controller import chain_remove_background
-from services.caption_services.caption_service import get_caption_for_image
+from services.caption_services.caption_service import process_caption_for_job
 from services.replicate_services.late_enhance_service import trigger_late_enhance
 from services.supabase_services.fetch_service import check_clothe_detail, fetch_job_record
 from services.supabase_services.insert_service import update_job_record
@@ -34,7 +34,7 @@ async def late_enhance_image(
         if is_enhance and is_caption:
             job = get_job_by_id(job_id)
             
-            loop.create_task(get_caption_for_image(job))
+            loop.create_task(process_caption_for_job(job))
             loop.create_task(trigger_late_enhance(job_id))
         elif is_enhance and is_caption:
             loop.create_task(trigger_late_enhance(job_id))

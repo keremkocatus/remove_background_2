@@ -4,7 +4,7 @@ import routes
 from services.supabase_services.insert_service import insert_edit_job_record
 from services.supabase_services.upload_service import upload_image_edit
 from utils.edit_registery import get_edit_job_status, register_edit_job
-from image_edit_services.replicate_services.image_edit_service import trigger_edit_prediction
+from services.replicate_services.image_edit_service import trigger_edit_prediction
 
 image_edit_router = APIRouter()
 

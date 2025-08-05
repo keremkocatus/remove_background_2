@@ -1,7 +1,7 @@
 import asyncio
 from starlette.concurrency import run_in_threadpool
 
-from services.caption_services.caption_service import get_caption_for_image
+from services.caption_services.caption_service import process_caption_for_job
 from utils.image_utils import get_image_from_url
 
 from services.supabase_services.upload_service import upload_background_removed_image, upload_edited_image, upload_enhanced_image
@@ -37,7 +37,7 @@ async def start_enhance_background_process(prediction: dict, job_id: str, job: d
 
 async def start_caption_background_process(image_url):
     try:
-        caption = await get_caption_for_image(image_url)
+        caption = await process_caption_for_job(image_url)
 
         return caption
     except Exception as error:

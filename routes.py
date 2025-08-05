@@ -13,3 +13,6 @@ LATE_ENHANCE_JOB_STATUS = "/late-enhance/job-status/{job_id}/{is_enhance}"
 IMAGE_EDIT = "/replicate/image-edit"
 WEBHOOK_IMAGE_EDIT = "/webhook/image-edit"
 EDIT_JOB_STATUS = "/edit/job-status/{job_id}"
+
+REVIEW_OUTFIT = "/review/start"
+REVIEW_JOB_STATUS = "/review/job-status/{job_id}"

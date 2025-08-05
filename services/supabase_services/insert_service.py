@@ -2,6 +2,7 @@ from services.supabase_services.client_service import get_supabase_client
 from utils.caption_tools.hex_utils import convert_colors_to_hex_format
 from utils.edit_registery import get_edit_job_by_id
 from utils.extract_utils import extract_id
+from utils.review_registery import get_review_job_id_by_job
 from utils.wardrobe_registery import get_job_by_id, update_registry
 import os
 
@@ -9,6 +10,7 @@ WARDROBE_BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 CLOTHES_DETAIL_TABLE = os.getenv("CLOTHES_DETAIL_TABLE")
 EDIT_BUCKET_NAME = os.getenv("EDIT_BUCKET_NAME")
 EDIT_TABLE_NAME = os.getenv("EDIT_TABLE_NAME")
+REVIEW_TABLE = os.getenv("REVIEW_TABLE")
 
 async def insert_job_record(job_id: str) -> dict:
     try:
@@ -111,4 +113,24 @@ async def insert_edit_job_record(job_id: str) -> dict:
         return {"status": "Job successfully inserted into database"}
     except Exception as error:
         print(f"Error in insert_edit_job_record: {error}")
+        return None
+
+async def insert_review_job_record(job: dict, result) -> dict:
+    try:
+        supabase = await get_supabase_client()
+
+        job_id = get_review_job_id_by_job(job)
+
+        response = await supabase.from_(REVIEW_TABLE).insert({
+            "image_url": job["image_url"],
+            "user_id": job["user_id"],
+            "job_id": job_id,
+            "status": "finished",
+            "roast_level": job["roast_level"],
+            "result": result,
+        }).execute()
+
+        return {"status": "Job successfully inserted into database"}
+    except Exception as error:
+        print(f"Error in insert_review_job_record: {error}")
         return None

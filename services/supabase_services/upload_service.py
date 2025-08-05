@@ -8,6 +8,7 @@ from utils.url_utils import clean_url
 WARDROBE_BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
 EDIT_BUCKET_NAME = os.getenv("EDIT_BUCKET_NAME")
 EDIT_TABLE_NAME = os.getenv("EDIT_TABLE_NAME")
+REVIEW_BUCKET = os.getenv("REVIEW_BUCKET")
 
 def build_storage_path(user_id: str, bucket_id: str, filename: str) -> str:
     return f"{user_id}/{bucket_id}/{filename}"
@@ -130,3 +131,24 @@ async def upload_edited_image(processed_image: bytes, job: dict[str, str]) -> st
     except Exception as error:
         print(f"Error in upload_edited_image: {error}")
         return None
+    
+async def upload_image_review(user_id: str, image: UploadFile):
+    try:
+        supabase = await get_supabase_client()
+        image_data = await image.read()
+        bucket_id = str(uuid.uuid4())
+        storage_path = build_storage_path(user_id, bucket_id, "review_image.jpg")
+
+        await supabase.storage.from_(REVIEW_BUCKET).upload(
+            file=image_data,
+            path=storage_path,
+            file_options={"cache-control": "3600", "upsert": "false"},
+        )
+
+        public_url_response = await supabase.storage.from_(REVIEW_BUCKET).get_public_url(storage_path)
+        public_url = extract_public_url(public_url_response)
+
+        return public_url, bucket_id
+    except Exception as error:
+        print(f"Error in upload_image: {error}")
+        return None, None

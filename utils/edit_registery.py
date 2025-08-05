@@ -69,7 +69,7 @@ async def get_edit_job_status(job_id: str):
         return {
             "job_id": job_id,
             "status": "finished",
-            "edited_image_url": result_url,
+            "result_url": result_url,
         }
     elif status == "failed":
         job = get_edit_job_by_id(job_id)
