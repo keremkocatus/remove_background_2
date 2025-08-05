@@ -1,6 +1,6 @@
 import uuid
 from fastapi import HTTPException
-from services.supabase_services.fail_service import upload_error_log
+from utils.error_logger import upload_error_log
 from utils.url_utils import extract_bucket_id
 
 JOB_REGISTRY: dict[str, dict] = {}
