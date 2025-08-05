@@ -1,7 +1,28 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 from io import BytesIO
 import requests
 
+# Fetch mask and apply it to the image
+def process_mask(mask_url: str, job: dict[str, str]) -> bytes:
+    try:
+        resp = requests.get(mask_url)
+        mask = Image.open(BytesIO(resp.content)).convert("L")
+
+        resp2 = requests.get(job["image_url"])
+        img = Image.open(BytesIO(resp2.content)).convert("RGBA")
+        img.putalpha(mask)
+        
+        r, g, b, alpha = img.split()
+        alpha_smoothed = alpha.filter(ImageFilter.GaussianBlur(radius=1))
+        img = Image.merge("RGBA", (r, g, b, alpha_smoothed))
+        
+        buf = BytesIO()
+        img.save(buf, format="PNG", quality=90, optimize=True)
+        
+        return buf.getvalue()
+    except Exception as e:
+        print(f"Error in process_mask: {e}")
+        raise
 
 def get_image_from_url(url: str):
     try:
@@ -15,7 +36,6 @@ def get_image_from_url(url: str):
     except Exception as e:
         print(f"Error in get_image_from_url: {e}")
         raise
-
 # Resize and save image as JPEG
 def compress_image(img: bytes, max_size: int = 1024, quality: int = 85):
     try:
