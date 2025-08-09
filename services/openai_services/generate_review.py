@@ -1,15 +1,12 @@
-import os
 import json
 from openai import AsyncOpenAI
-from dotenv import load_dotenv
+from core import config
 
 from utils.review_registery import update_review_registry
 from utils.openai_tool import get_outfit_review_prompt, get_outfit_review_tool_schema
 
 
-load_dotenv()
-
-client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = AsyncOpenAI(api_key=config.OPENAI_API_KEY)
 
 async def generate_outfit_review(image_url: str, roast_level: int ,job_id: str) -> dict | None:
     try:

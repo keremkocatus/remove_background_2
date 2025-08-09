@@ -1,6 +1,6 @@
 import asyncio
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
-import routes
+import core.routes as routes
 from services.review_services.review_service import process_outfit_review_for_job
 from services.supabase_services.upload_service import upload_image_review
 from utils.review_registery import get_review_job_status, register_review_job

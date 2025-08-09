@@ -1,14 +1,13 @@
-import os
 import uuid
 from fastapi import UploadFile
 from services.supabase_services.client_service import get_supabase_client
 from utils.url_utils import clean_url
+from core import config
 
-
-WARDROBE_BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
-EDIT_BUCKET_NAME = os.getenv("EDIT_BUCKET_NAME")
-EDIT_TABLE_NAME = os.getenv("EDIT_TABLE_NAME")
-REVIEW_BUCKET = os.getenv("REVIEW_BUCKET")
+WARDROBE_BUCKET_NAME = config.WARDROBE_BUCKET_NAME
+EDIT_BUCKET_NAME = config.EDIT_BUCKET_NAME
+EDIT_TABLE_NAME = config.EDIT_TABLE_NAME
+REVIEW_BUCKET = config.REVIEW_BUCKET
 
 def build_storage_path(user_id: str, bucket_id: str, filename: str) -> str:
     return f"{user_id}/{bucket_id}/{filename}"

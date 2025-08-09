@@ -1,6 +1,6 @@
 import asyncio
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
-import routes
+import core.routes as routes
 from services.supabase_services.insert_service import insert_edit_job_record
 from services.supabase_services.upload_service import upload_image_edit
 from utils.edit_registery import get_edit_job_status, register_edit_job

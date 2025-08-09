@@ -1,12 +1,9 @@
-import os
 import asyncio
-from dotenv import load_dotenv
 from supabase import AsyncClient, create_async_client
+from core import config
 
-load_dotenv()
-
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_URL = config.SUPABASE_URL
+SUPABASE_ANON_KEY = config.SUPABASE_ANON_KEY
 
 # Lazy-initialized Supabase client
 _supabase_client: AsyncClient | None = None

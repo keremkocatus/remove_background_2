@@ -7,7 +7,7 @@ from services.supabase_services.insert_service import insert_job_record
 from services.replicate_services.enhance_service import trigger_prediction as trigger_enhance
 
 from utils.wardrobe_registery import get_job_status, register_job
-import routes
+import core.routes as routes
 
 chain_router = APIRouter()
 

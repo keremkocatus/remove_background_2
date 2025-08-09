@@ -1,25 +1,20 @@
-import os
 import replicate
 import asyncio
 from fastapi import HTTPException
-from dotenv import load_dotenv
 
 from services.supabase_services.fail_service import mark_job_failed
-
 from utils.background_utils import start_fast_background_process
-
 from utils.wardrobe_registery import (
     get_job_by_id,
     get_job_by_prediction_id,
     update_registry,
 )
+from core import config
 
-load_dotenv()
-replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
-replicate_client = replicate.Client(api_token=replicate_api_token)
+replicate_client = replicate.Client(api_token=config.REPLICATE_API_KEY)
 
-FAST_MODEL_ID = os.getenv("FAST_MODEL_ID")
-REMBG_WEBHOOK_URL = os.getenv("REPLICATE_WEBHOOK_URL")
+FAST_MODEL_ID = config.FAST_MODEL_ID
+REMBG_WEBHOOK_URL = config.REMBG_WEBHOOK_URL
 
 # Submit an asynchronous prediction request to Replicate
 async def trigger_rembg(job_id: str):
@@ -37,9 +32,9 @@ async def trigger_rembg(job_id: str):
         "threshold": -20,
         "background_type": "rgba",
     }
-    
+
     model_id = FAST_MODEL_ID
-    webhook_url = f"{REMBG_WEBHOOK_URL}/webhook/replicate/fast-rembg"
+    webhook_url = REMBG_WEBHOOK_URL
 
     prediction = await replicate_client.predictions.async_create(
         version=model_id,
@@ -47,8 +42,10 @@ async def trigger_rembg(job_id: str):
         webhook=webhook_url,
         webhook_events_filter=["completed"],
     )
+
     # prediction_id bilgisini registry'ye yaz
     update_registry(job_id, "rembg_prediction_id", prediction.id)
+
 
 # Handle webhook event for fast prediction completion
 async def handle_fast_webhook(payload: dict):
@@ -65,4 +62,3 @@ async def handle_fast_webhook(payload: dict):
         if job_id:
             await mark_job_failed(job_id)
         raise HTTPException(status_code=500, detail=f"Webhook processing failed: {e}")
-
