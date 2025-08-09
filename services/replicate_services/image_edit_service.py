@@ -1,20 +1,18 @@
-import os
 import replicate
 import logging
 from fastapi import HTTPException
-from dotenv import load_dotenv
 from replicate.exceptions import ReplicateError
-import routes
+
+import core.routes as routes
 from services.supabase_services.fail_service import mark_edit_job_failed
 from utils.background_utils import start_edit_background_process
 from utils.edit_registery import get_edit_job_by_id, get_edit_job_by_prediction_id, update_edit_registry
+from core import config
 
-load_dotenv()
-replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
-replicate_client = replicate.Client(api_token=replicate_api_token)
+replicate_client = replicate.Client(api_token=config.REPLICATE_API_KEY)
 
-MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
-EDIT_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}{routes.WEBHOOK_IMAGE_EDIT}"
+MODEL_ID = config.ENHANCE_MODEL_ID
+EDIT_WEBHOOK_URL = config.EDIT_WEBHOOK_URL
 
 # Submit an asynchronous enhancement prediction request to Replicate
 async def trigger_edit_prediction(job_id: str) -> None:
@@ -46,6 +44,7 @@ async def trigger_edit_prediction(job_id: str) -> None:
         logging.exception(f"[trigger_prediction] Unexpected error for job {job_id}")
         await mark_edit_job_failed(job_id)
 
+
 # Handle webhook event for enhancement prediction completion
 async def handle_edit_webhook(payload: dict) -> None:
     job_id = None
@@ -59,11 +58,9 @@ async def handle_edit_webhook(payload: dict) -> None:
             await start_edit_background_process(payload, job_id, job)
 
             return job_id, job
-        else: 
+        else:
             await mark_edit_job_failed(job_id)
     except Exception as e:
         if job_id:
             await mark_edit_job_failed(job_id)
         raise HTTPException(status_code=500, detail=f"Webhook processing failed: {e}")
-
-

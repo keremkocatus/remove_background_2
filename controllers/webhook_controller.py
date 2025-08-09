@@ -5,7 +5,7 @@ from services.replicate_services.enhance_service import handle_enhance_webhook
 from services.replicate_services.late_enhance_service import handle_late_enhance_webhook, late_chain_remove_background
 from services.replicate_services.rembg_service import handle_fast_webhook
 import asyncio
-import routes
+import core.routes as routes
 from services.supabase_services.fail_service import mark_job_failed
 
 

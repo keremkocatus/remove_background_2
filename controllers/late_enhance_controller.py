@@ -6,7 +6,7 @@ from services.replicate_services.late_enhance_service import trigger_late_enhanc
 from services.supabase_services.fetch_service import check_clothe_detail, fetch_job_record
 from services.supabase_services.insert_service import update_job_record
 from utils.wardrobe_registery import get_job_by_id, get_job_status, insert_late_enhance_record
-import routes
+import core.routes as routes
 
 
 late_enhance_router = APIRouter()

@@ -1,8 +1,8 @@
 from services.supabase_services.client_service import get_supabase_client
-import os
+from core import config
 
-BUCKET_NAME = os.getenv("WARDROBE_BUCKET_NAME")
-CLOTHE_DETAIL_TABLE = os.getenv("CLOTHES_DETAIL_TABLE")
+BUCKET_NAME = config.WARDROBE_BUCKET_NAME
+CLOTHE_DETAIL_TABLE = config.CLOTHES_DETAIL_TABLE
 
 async def fetch_job_record(user_id: str, image_url: str) -> dict:
     try:
@@ -33,4 +33,3 @@ async def check_clothe_detail(wardrobe_id: str):
         
     except Exception as e:
         raise RuntimeError(f"Supabase clothe detai error: {e}")
-    

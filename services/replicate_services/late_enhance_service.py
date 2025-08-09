@@ -1,23 +1,20 @@
 import asyncio
-import os
 import replicate
 import logging
 from fastapi import HTTPException
-from dotenv import load_dotenv
 from replicate.exceptions import ReplicateError
+
 from services.supabase_services.fail_service import mark_job_failed
 from utils.background_utils import start_enhance_background_process
 from utils.wardrobe_registery import get_job_by_id, get_job_by_prediction_id, update_registry
 from utils.prompt_utils import get_enhance_prompt
-import asyncio
 from services.replicate_services.rembg_service import trigger_rembg
+from core import config
 
-load_dotenv()
-replicate_api_token = os.getenv("REPLICATE_API_TOKEN")
-replicate_client = replicate.Client(api_token=replicate_api_token)
+replicate_client = replicate.Client(api_token=config.REPLICATE_API_KEY)
 
-MODEL_ID = os.getenv("ENHANCE_MODEL_ID")
-ENHANCE_WEBHOOK_URL = f"{os.getenv('REPLICATE_WEBHOOK_URL')}/webhook/late-enhance"
+MODEL_ID = config.ENHANCE_MODEL_ID
+ENHANCE_WEBHOOK_URL = config.LATE_ENHANCE_WEBHOOK_URL
 
 # Submit an asynchronous enhancement prediction request to Replicate
 async def trigger_late_enhance(job_id: str) -> None:
@@ -25,7 +22,7 @@ async def trigger_late_enhance(job_id: str) -> None:
         job = get_job_by_id(job_id)
         image_url = job["image_url"]
         category = job["category"]
-        
+
         prompt = get_enhance_prompt(category)
 
         prediction_input = {
